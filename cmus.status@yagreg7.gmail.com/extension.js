@@ -83,7 +83,7 @@ let keys =
 	{
 		for (let i = 0; i < this.bindings.length; i++)
 		{
-			global.display.ungrab_accelerator(this.bindings[i].binding);
+			global.display.ungrab_accelerator(this.bindings[i].action);
 			Main.wm.allowKeybinding(this.bindings[i].name, Shell.ActionMode.NONE);
 		}
 	}
@@ -394,13 +394,14 @@ function init()
 {
 	tray.init();
 	keys.init();
-	keys.addBinding("<alt>c", () => { cmus.play_action(); });
-	keys.addBinding("<alt>x", () => { cmus.back(); });
-	keys.addBinding("<alt>v", () => { cmus.next(); });
 }
 
 function enable()
 {
+	keys.addBinding("<alt>c", () => { cmus.play_action(); });
+	keys.addBinding("<alt>x", () => { cmus.back(); });
+	keys.addBinding("<alt>v", () => { cmus.next(); });
+
 	tray.show();
 
 	updateStatus();
