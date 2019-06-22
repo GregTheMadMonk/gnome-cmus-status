@@ -11,7 +11,10 @@ const Tweener	= imports.ui.tweener;
 // extension settings
 let settings =
 {
-	// formats
+	// string formats
+	// %a% - atrist
+	// %t% - title
+	// %al% - album
 	trayFormat: "%a% - %t%",
 	notifyFormat: "%a% - %t% (%al%)",
 
@@ -23,6 +26,7 @@ let settings =
 		next: "<alt>v"
 	},
 
+	// formats the string
 	format: function(str)
 	{
 		return str.replace("%a%", cmus.track.artist).replace("%t%", cmus.track.title).replace("%al%", cmus.track.album);
@@ -33,17 +37,18 @@ let settings =
 let keys =
 {
 	bindings: [],
-	callbacks: [],
+
+	connectId: null, // to disconnect listener later
 
 	init: function()
-	{
-		global.display.connect("accelerator-activated", (display, action, deviceId, timestamp) =>
+	{	// initialize listener
+		this.connectId = global.display.connect("accelerator-activated", (display, action, deviceId, timestamp) =>
 		{
 			for (let i = 0; i < this.bindings.length; i++)
 			{
 				if (this.bindings[i].code == action)
 				{
-					this.callbacks[i]();
+					this.bindings[i].callback();
 					break;
 				}
 			}
@@ -51,41 +56,44 @@ let keys =
 	},
 
 	addBinding: function(binding, callback)
-	{
-		let keyAction = global.display.grab_accelerator(binding);
+	{	// create binding
+		const keyAction = global.display.grab_accelerator(binding);
 		if (keyAction == Meta.KeyBindingAction.NONE)
 		{
 			log("cmus-status: Unable to bind " + binding);
 		}
 		else
 		{
-			let keyName = Meta.external_binding_name_for_action(keyAction);
+			const keyName = Meta.external_binding_name_for_action(keyAction);
 
 			Main.wm.allowKeybinding(keyName, Shell.ActionMode.ALL);
 
-			let keyCode = keyName.substring(keyName.lastIndexOf("-") + 1);
+			const keyCode = keyName.substring(keyName.lastIndexOf("-") + 1);
 
-			const index = this.bindings.length;
-			this.bindings[index] = 
+			this.bindings[this.bindings.length] = 
 			{
 				binding: binding,
 				action: keyAction,
 				name: keyName,
-				code: keyCode 
+				code: keyCode,
+				callback: callback
 			};
-			this.callbacks[index] = callback;
 
 			log("cmus-status: Bound " + binding + ": name : " + keyName + "; №" + keyCode);
 		}
 	},
 
 	detach: function()
-	{
+	{	// remove all keybindings and a listener
 		for (let i = 0; i < this.bindings.length; i++)
 		{
 			global.display.ungrab_accelerator(this.bindings[i].action);
 			Main.wm.allowKeybinding(this.bindings[i].name, Shell.ActionMode.NONE);
 		}
+
+		this.bindings = [];
+
+		global.display.disconnect(this.connectId);
 	}
 };
 
@@ -93,14 +101,14 @@ let keys =
 let notification =
 {
 	vPos: 2, hPos: 2, // 1 = left/top; 2 = center; 3 = right / bottom
-	fadeStartTime: 2, fadeDuration: 5,
-	hideIndex: 0,
-	actor: null,
 	offset: 10, // notification offset
+	fadeStartTime: 2, fadeDuration: 5, // animation timers
+	hideIndex: 0, // workaround to not remove notification from the screen too early when changing tracks fast
+	actor: null, // notification
 	notification_text: "TEST",
 	
-	show: function() // show notifiaction
-	{
+	show: function()
+	{	// show notification
 		this.hide(this.hideIndex);
 
 		if (!this.actor)
@@ -142,8 +150,8 @@ let notification =
 		});
 	},
 
-	hide: function(index) // hide notification
-	{
+	hide: function(index)
+	{	// hide notification
 		if ((this.actor != null) && (index == this.hideIndex))
 		{
 			Main.uiGroup.remove_actor(this.actor);
@@ -157,17 +165,17 @@ let notification =
 	}
 };
 
-// tray ui
+// tray management
 let tray =
 {
-	main_box: null, 
-	prev_button: null, button: null, next_button: null,
-	status_label: null, status_icon: null,
-	trayed: false,
-	caption: "tray label",
+	main_box: null, // container for all tray ui
+	prev_button: null, button: null, next_button: null, // playback buttons
+	status_label: null, status_icon: null, // middle button contents
+	trayed: false, // is system stray ui showed?
+	caption: "tray label", // label caption
 
-	init: function() // tray initialization
-	{
+	init: function()
+	{	// tray initialization
 		this.main_box = new St.BoxLayout();
 
 		this.button = new St.Bin({ style_class: "panel-button",
@@ -229,7 +237,7 @@ let tray =
 	},
 
 	show: function()
-	{
+	{	// add to tray
 		if (!this.trayed)
 		{
 			this.trayed = true;
@@ -238,7 +246,7 @@ let tray =
 	},
 
 	hide: function()
-	{
+	{	// remove from tray
 		if (this.trayed)
 		{
 			this.trayed = false;
@@ -254,7 +262,7 @@ let tray =
 	},
 
 	updateStatus: function(newStatus)
-	{
+	{	// updates middle button icon accordingly
 		if (this.status_icon) switch (newStatus)
 		{
 			case "off": case "stopped":
@@ -275,10 +283,10 @@ let cmus =
 {
 	state: "off",
 	track: { title: "title", album: "album", artist: "artist" },
-	updated: false,
+	updated: false, // true if track info changed
 
 	updateStatus: function()
-	{
+	{	// recieves info from cmus-remote
 		const std = GLib.spawn_command_line_sync("cmus-remote -Q");
 		if (std[2].toString() != "") // check if theere are any errors. If cmus is off, stderr is also not empty
 		{
@@ -287,8 +295,8 @@ let cmus =
 		}
 		else
 		{
-			// resolve rcieved data
-			const stdout = std[1].toString().replace(/\'/g, "\\\`");
+			// resolve recieved data
+			const stdout = std[1].toString().replace(/\'/g, "\\\`"); // replace ' quotes with ` to avoid errors while parsing commands later
 
 			// get cmus status
 			this.state = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"status \" | sed \"s/status\\s*//g\"'")[1].toString().replace("\n", "");
@@ -330,7 +338,7 @@ let cmus =
 	{
 		const terminal = GLib.spawn_command_line_sync("sh -c \"gsettings get org.gnome.desktop.default-applications.terminal exec | sed \\\"s/'//g\\\"\"")[1].toString().replace("/n", "");
 		const arg = GLib.spawn_command_line_sync("sh -c \"gsettings get org.gnome.desktop.default-applications.terminal exec-arg | sed \\\"s/'//g\\\"\"")[1].toString().replace("/n", "");
-		GLib.spawn_command_line_sync(terminal + " " + arg + " cmus");
+		if (terminal && arg) GLib.spawn_command_line_sync(terminal + " " + arg + " cmus");
 	},
 
 	back: function()
@@ -344,7 +352,7 @@ let cmus =
 	},
 
 	play_action: function()
-	{
+	{	// we want to resume playing if paused, pause if playing, or turn on cmus if it is off
 		switch (this.state)
 		{
 			case "off":
@@ -359,6 +367,8 @@ let cmus =
 		}
 	}
 };
+
+let enabled = false; // false to stop updating the status
 
 // status update function
 function updateStatus()
@@ -386,31 +396,35 @@ function updateStatus()
 			break;
 	}
 
-	MainLoop.timeout_add(250, updateStatus);
+	if (enabled) MainLoop.timeout_add(250, updateStatus);
 }
 
 // extension functions
 function init()
 {
 	tray.init();
-	keys.init();
 }
 
 function enable()
 {
+	keys.init();
 	keys.addBinding("<alt>c", () => { cmus.play_action(); });
 	keys.addBinding("<alt>x", () => { cmus.back(); });
 	keys.addBinding("<alt>v", () => { cmus.next(); });
 
 	tray.show();
 
+	enabled = true;
 	updateStatus();
 }
 
 function disable()
 {
 	tray.hide();
+
 	notification.hide(notification.hideIndex);
 
 	keys.detach();
+
+	enabled = false;
 }
