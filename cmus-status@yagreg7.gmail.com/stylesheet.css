@@ -1,4 +1,4 @@
-.popup-label 
+.notification-label 
 {
 	font-size: 24px;
 	font-weight: bold;
@@ -11,4 +11,9 @@
 .tray-label
 {
 	padding-right: .5em;
+}
+
+.popup-menu
+{
+	margin: 10px;
 }

@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkAdjustment" id="pref_notification_fade_duration_adj">
+    <property name="upper">100</property>
+    <property name="value">5</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="pref_notification_fade_start_adj">
+    <property name="upper">100</property>
+    <property name="value">2</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkAdjustment" id="pref_tick_interval_adj">
+    <property name="lower">10</property>
+    <property name="upper">10000</property>
+    <property name="value">250</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
+  <object class="GtkBox" id="window">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="margin_left">5</property>
+    <property name="margin_right">5</property>
+    <property name="margin_top">5</property>
+    <property name="margin_bottom">5</property>
+    <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Status update inteval (milliseconds)</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="pref_tick_interval">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">pref_tick_interval_adj</property>
+            <property name="value">250</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkToggleButton" id="pref_enable_binds">
+        <property name="label" translatable="yes">Keybindings enabled</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="margin_top">5</property>
+        <property name="active">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Play/pause/launch cmus: </property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="pref_play_bind">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item id="a" translatable="yes">&lt;alt&gt;a</item>
+                  <item id="b" translatable="yes">&lt;alt&gt;b</item>
+                  <item id="c" translatable="yes">&lt;alt&gt;c</item>
+                  <item id="d" translatable="yes">&lt;alt&gt;d</item>
+                  <item id="e" translatable="yes">&lt;alt&gt;e</item>
+                  <item id="f" translatable="yes">&lt;alt&gt;f</item>
+                  <item id="g" translatable="yes">&lt;alt&gt;g</item>
+                  <item id="h" translatable="yes">&lt;alt&gt;h</item>
+                  <item id="i" translatable="yes">&lt;alt&gt;i</item>
+                  <item id="j" translatable="yes">&lt;alt&gt;j</item>
+                  <item id="k" translatable="yes">&lt;alt&gt;k</item>
+                  <item id="l" translatable="yes">&lt;alt&gt;l</item>
+                  <item id="m" translatable="yes">&lt;alt&gt;m</item>
+                  <item id="n" translatable="yes">&lt;alt&gt;n</item>
+                  <item id="o" translatable="yes">&lt;alt&gt;o</item>
+                  <item id="p" translatable="yes">&lt;alt&gt;p</item>
+                  <item id="q" translatable="yes">&lt;alt&gt;q</item>
+                  <item id="r" translatable="yes">&lt;alt&gt;r</item>
+                  <item id="s" translatable="yes">&lt;alt&gt;s</item>
+                  <item id="t" translatable="yes">&lt;alt&gt;t</item>
+                  <item id="u" translatable="yes">&lt;alt&gt;u</item>
+                  <item id="v" translatable="yes">&lt;alt&gt;v</item>
+                  <item id="w" translatable="yes">&lt;alt&gt;w</item>
+                  <item id="x" translatable="yes">&lt;alt&gt;x</item>
+                  <item id="y" translatable="yes">&lt;alt&gt;y</item>
+                  <item id="z" translatable="yes">&lt;alt&gt;z</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Previous track: </property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="pref_prev_bind">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item id="a" translatable="yes">&lt;alt&gt;a</item>
+                  <item id="b" translatable="yes">&lt;alt&gt;b</item>
+                  <item id="c" translatable="yes">&lt;alt&gt;c</item>
+                  <item id="d" translatable="yes">&lt;alt&gt;d</item>
+                  <item id="e" translatable="yes">&lt;alt&gt;e</item>
+                  <item id="f" translatable="yes">&lt;alt&gt;f</item>
+                  <item id="g" translatable="yes">&lt;alt&gt;g</item>
+                  <item id="h" translatable="yes">&lt;alt&gt;h</item>
+                  <item id="i" translatable="yes">&lt;alt&gt;i</item>
+                  <item id="j" translatable="yes">&lt;alt&gt;j</item>
+                  <item id="k" translatable="yes">&lt;alt&gt;k</item>
+                  <item id="l" translatable="yes">&lt;alt&gt;l</item>
+                  <item id="m" translatable="yes">&lt;alt&gt;m</item>
+                  <item id="n" translatable="yes">&lt;alt&gt;n</item>
+                  <item id="o" translatable="yes">&lt;alt&gt;o</item>
+                  <item id="p" translatable="yes">&lt;alt&gt;p</item>
+                  <item id="q" translatable="yes">&lt;alt&gt;q</item>
+                  <item id="r" translatable="yes">&lt;alt&gt;r</item>
+                  <item id="s" translatable="yes">&lt;alt&gt;s</item>
+                  <item id="t" translatable="yes">&lt;alt&gt;t</item>
+                  <item id="u" translatable="yes">&lt;alt&gt;u</item>
+                  <item id="v" translatable="yes">&lt;alt&gt;v</item>
+                  <item id="w" translatable="yes">&lt;alt&gt;w</item>
+                  <item id="x" translatable="yes">&lt;alt&gt;x</item>
+                  <item id="y" translatable="yes">&lt;alt&gt;y</item>
+                  <item id="z" translatable="yes">&lt;alt&gt;z</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Next track: </property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText" id="pref_next_bind">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <items>
+                  <item id="a" translatable="yes">&lt;alt&gt;a</item>
+                  <item id="b" translatable="yes">&lt;alt&gt;b</item>
+                  <item id="c" translatable="yes">&lt;alt&gt;c</item>
+                  <item id="d" translatable="yes">&lt;alt&gt;d</item>
+                  <item id="e" translatable="yes">&lt;alt&gt;e</item>
+                  <item id="f" translatable="yes">&lt;alt&gt;f</item>
+                  <item id="g" translatable="yes">&lt;alt&gt;g</item>
+                  <item id="h" translatable="yes">&lt;alt&gt;h</item>
+                  <item id="i" translatable="yes">&lt;alt&gt;i</item>
+                  <item id="j" translatable="yes">&lt;alt&gt;j</item>
+                  <item id="k" translatable="yes">&lt;alt&gt;k</item>
+                  <item id="l" translatable="yes">&lt;alt&gt;l</item>
+                  <item id="m" translatable="yes">&lt;alt&gt;m</item>
+                  <item id="n" translatable="yes">&lt;alt&gt;n</item>
+                  <item id="o" translatable="yes">&lt;alt&gt;o</item>
+                  <item id="p" translatable="yes">&lt;alt&gt;p</item>
+                  <item id="q" translatable="yes">&lt;alt&gt;q</item>
+                  <item id="r" translatable="yes">&lt;alt&gt;r</item>
+                  <item id="s" translatable="yes">&lt;alt&gt;s</item>
+                  <item id="t" translatable="yes">&lt;alt&gt;t</item>
+                  <item id="u" translatable="yes">&lt;alt&gt;u</item>
+                  <item id="v" translatable="yes">&lt;alt&gt;v</item>
+                  <item id="w" translatable="yes">&lt;alt&gt;w</item>
+                  <item id="x" translatable="yes">&lt;alt&gt;x</item>
+                  <item id="y" translatable="yes">&lt;alt&gt;y</item>
+                  <item id="z" translatable="yes">&lt;alt&gt;z</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkToggleButton" id="pref_simple_tray">
+        <property name="label" translatable="yes">Tray: control buttons</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="margin_top">5</property>
+        <property name="margin_bottom">5</property>
+        <property name="active">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Tray text format:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="pref_tray_format">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">%a% - %t%</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Notification format:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="pref_notification_format">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">%a% - %t% (%al%)</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">5</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Formatting info: %a% - artist; %t% - title; %al% - album</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">6</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkToggleButton" id="pref_enable_notifications">
+        <property name="label" translatable="yes">On-screen notifications enabled</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="margin_top">5</property>
+        <property name="active">True</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">7</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Notification fade start time:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="pref_notification_fade_time">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">pref_notification_fade_start_adj</property>
+            <property name="value">2</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">8</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Notification fade duration:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSpinButton" id="pref_notification_fade_duration">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="adjustment">pref_notification_fade_duration_adj</property>
+            <property name="value">5</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">9</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Notification position:</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">10</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_00">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_10">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_20">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">11</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_01">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_11">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_21">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">12</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="homogeneous">True</property>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_02">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_12">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkToggleButton" id="pref_np_22">
+            <property name="label" translatable="yes"> </property>
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">13</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkButton" id="pref_apply">
+        <property name="label" translatable="yes">Apply</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+        <property name="halign">end</property>
+        <property name="margin_top">5</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">14</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkLabel" id="info_label">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">label</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">15</property>
+      </packing>
+    </child>
+  </object>
+</interface>

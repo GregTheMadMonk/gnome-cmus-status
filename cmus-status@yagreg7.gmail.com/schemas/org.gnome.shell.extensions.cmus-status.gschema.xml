@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+	<schema id="org.gnome.shell.extensions.cmus-status" path="/org/gnome/shell/extensions/cmus-status/">
+		<key name="settings-updated" type="b">
+			<default>true</default>
+			<summary>Do settings require update?</summary>
+			<description>true if extension needs to reload settings (for example, set on "Apply" button click</description>
+		</key>	
+		<key name="update-interval" type="i">
+			<default>250</default>
+			<summary>Extension info refresh interval</summary>
+			<description>Value in milliseconds</description>
+		</key>
+		<key name="enable-binds" type="b">
+			<default>true</default>
+			<summary>Enable keybindings</summary>
+			<description>Enable extension to map keys to player actions</description>
+		</key>
+		<key name="play-bind" type="s">
+			<default>"c"</default>
+			<summary>Play bind</summary>
+			<description>Key that is usd with alt as a play bind </description>
+		</key>
+		<key name="prev-bind" type="s">
+			<default>"x"</default>
+			<summary>Previous bind</summary>
+			<description>Key that is usd with alt as a previous bind </description>
+		</key>
+		<key name="next-bind" type="s">
+			<default>"v"</default>
+			<summary>Next bind</summary>
+			<description>Key that is usd with alt as a next bind </description>
+		</key>
+		<key name="enable-notifications" type="b">
+			<default>true</default>
+			<summary>Enable notifications</summary>
+			<description>Turns on notifications</description>
+		</key>
+		<key name="notification-fade-start-time" type="i">
+			<default>2</default>
+			<summary>Notification fade start time</summary>
+			<description>Time in seconds that must pass before notification starts to fade</description>
+		</key>
+		<key name="notification-fade-duration" type="i">
+			<default>5</default>
+			<summary>Notification fade duration</summary>
+			<description>Fade animation duration</description>
+		</key>
+		<key name="notification-posx" type="i">
+			<default>2</default>
+			<summary>Notification position X</summary>
+			<description>0 = right, 1 = center, 2 = left</description>
+		</key>
+		<key name="notification-posy" type="i">
+			<default>2</default>
+			<summary>Notification position Y</summary>
+			<description>0 = top, 1 = center, 2 = bottom</description>
+		</key>
+		<key name="simple-tray" type="b">
+			<default>true</default>
+			<summary>Simple tray</summary>
+			<description>Toggles simple tray</description>
+		</key>
+
+		<key name="tray-format" type="s">
+			<default>"%a% - %t%"</default>
+			<summary>Tray text format</summary>
+			<description>%a% - artist, %t% - track title, %al% - album</description>
+		</key>
+		<key name="notification-format" type="s">
+			<default>"%a% - %t% (%al%)"</default>
+			<summary>Notification text format</summary>
+			<description>%a% - artist, %t% - track title, %al% - album</description>
+		</key>
+	</schema>
+</schemalist>

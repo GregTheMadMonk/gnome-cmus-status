@@ -1,16 +1,25 @@
 // imports
+const Clutter	= imports.gi.Clutter;
 const GLib 	= imports.gi.GLib;
 const Lang 	= imports.lang;
 const Main 	= imports.ui.main;
 const MainLoop 	= imports.mainloop;
+const Me	= imports.misc.extensionUtils.getCurrentExtension();
 const Meta	= imports.gi.Meta;
+const PanelMenu	= imports.ui.panelMenu;
+const PopupMenu	= imports.ui.popupMenu;
 const Shell 	= imports.gi.Shell;
 const St	= imports.gi.St;
 const Tweener	= imports.ui.tweener;
 
+const Shared	= Me.imports.shared;
+
+let gsettings = null;
+
 // extension settings
 let settings =
 {
+	updated: false,
 	// string formats
 	// %a% - atrist
 	// %t% - title
@@ -18,12 +27,24 @@ let settings =
 	trayFormat: "%a% - %t%",
 	notifyFormat: "%a% - %t% (%al%)",
 
+	updateIntervalMs: 250,
+
+	simpleTray: true,
+
 	// key bindings
 	bindings:
 	{
+		enabled: true,
 		play: "<alt>c",
-		prev: "<alt>x",
+		back: "<alt>x",
 		next: "<alt>v"
+	},
+
+	notification:
+	{
+		fadeStartTime: 2, fadeDuration: 5, // animation timers
+		vPos: 2, hPos: 2, // 1 = left/top; 2 = center; 3 = right / bottom
+		enabled: true
 	},
 
 	// formats the string
@@ -37,6 +58,7 @@ let settings =
 let keys =
 {
 	bindings: [],
+	bound: false,
 
 	connectId: null, // to disconnect listener later
 
@@ -100,9 +122,7 @@ let keys =
 // notification object
 let notification =
 {
-	vPos: 2, hPos: 2, // 1 = left/top; 2 = center; 3 = right / bottom
 	offset: 10, // notification offset
-	fadeStartTime: 2, fadeDuration: 5, // animation timers
 	hideIndex: 0, // workaround to not remove notification from the screen too early when changing tracks fast
 	actor: null, // notification
 	notification_text: "TEST",
@@ -113,7 +133,7 @@ let notification =
 
 		if (!this.actor)
 		{
-			this.actor = new St.Label({ style_class: "popup-label", text: this.notification_text });
+			this.actor = new St.Label({ style_class: "notification-label", text: this.notification_text });
 			Main.uiGroup.add_actor(this.actor);
 		}
 		this.actor.opacity = 255;
@@ -122,14 +142,14 @@ let notification =
 
 		// calculate notification position
 		let posX = 0;
-		if (this.hPos == 0) posX = this.offset;
-		if (this.hPos == 1) posX = monitor.x + Math.floor(monitor.width / 2 - this.actor.width / 2);
-		if (this.hPos == 2) posX = monitor.x + monitor.width - this.actor.width - this.offset;
+		if (settings.notification.hPos == 0) posX = this.offset;
+		if (settings.notification.hPos == 1) posX = monitor.x + Math.floor(monitor.width / 2 - this.actor.width / 2);
+		if (settings.notification.hPos == 2) posX = monitor.x + monitor.width - this.actor.width - this.offset;
 
 		let posY = 0;
-		if (this.vPos == 0) posY = this.offset;
-		if (this.vPos == 1) posY = monitor.y + Math.floor(monitor.height / 2 - this.actor.height / 2);
-		if (this.vPos == 2) posY = monitor.y + monitor.height - this.actor.height - this.offset;
+		if (settings.notification.vPos == 0) posY = this.offset;
+		if (settings.notification.vPos == 1) posY = monitor.y + Math.floor(monitor.height / 2 - this.actor.height / 2);
+		if (settings.notification.vPos == 2) posY = monitor.y + monitor.height - this.actor.height - this.offset;
 
 		this.actor.set_position(posX, posY);
 
@@ -138,13 +158,13 @@ let notification =
 		const current = this.hideIndex;
 
 		// set hide timeout
-		MainLoop.timeout_add_seconds(this.fadeStartTime, () =>
+		MainLoop.timeout_add_seconds(settings.notification.fadeStartTime, () =>
 		{
 			Tweener.addTween(this.actor, 
 						{ 
 							opacity: 0, 
-							time: this.fadeDuration, 
-							traansition: "easeOutQuad",
+							time: settings.notification.fadeDuration, 
+							transition: "easeOutQuad",
 							onComplete: () => { this.hide(current); }
 						});
 		});
@@ -166,16 +186,107 @@ let notification =
 };
 
 // tray management
-let tray =
-{
+const trayItem = new Lang.Class({
+	Name: "trayItem",
+	Extends: PanelMenu.Button,
+
 	main_box: null, // container for all tray ui
 	prev_button: null, button: null, next_button: null, // playback buttons
 	status_label: null, status_icon: null, // middle button contents
 	trayed: false, // is system stray ui showed?
 	caption: "tray label", // label caption
 
-	init: function()
+	_init: function()
 	{	// tray initialization
+		this.parent(0.5, "cmus-status", false);
+
+		if (settings.simpleTray) this.initSimple();
+		else this.initWPopup();
+	},
+
+	initWPopup: function()
+	{
+		// construct tray ui
+		this.main_box = new St.BoxLayout();
+		
+		this.button = new St.Bin({ style_class: "panel-button",
+						reactive: true,
+						can_focus: true,
+						x_fill: true,
+						y_fill: false,
+						track_hover: true });
+
+		let box = new St.BoxLayout();
+
+		this.status_label = new St.Label({ style_class: "tray-label", text: this.caption });
+		this.status_icon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
+						style_class: "system-status-icon" });
+
+		box.add_child(this.status_icon);
+		box.add_child(this.status_label);
+
+		this.button.set_child(box);
+
+		this.main_box.add_child(this.button);
+
+		this.actor.add_child(this.main_box);
+
+		// construct popup
+		/*
+		// This is an example of PopupSubMenuMenuItem, a menu expander
+		let popupMenuExpander = new PopupMenu.PopupSubMenuMenuItem('PopupSubMenuMenuItem');
+	
+		// This is an example of PopupMenuItem, a menu item. We will use this to add as a submenu
+		let submenu = new PopupMenu.PopupMenuItem('PopupMenuItem');
+
+		// A new label
+		let label = new St.Label({text:'Item 1'});
+
+		// Add the label and submenu to the menu expander
+		popupMenuExpander.menu.addMenuItem(submenu);
+		popupMenuExpander.menu.box.add(label);
+		
+		// The CSS from our file is automatically imported
+		// You can add custom styles like this
+		// REMOVE THIS AND SEE WHAT HAPPENS
+		popupMenuExpander.menu.box.style_class = 'PopupSubMenuMenuItemStyle';
+			
+		// Other standard menu items
+		let menuitem = new PopupMenu.PopupMenuItem('PopupMenuItem');
+		let switchmenuitem = new PopupMenu.PopupSwitchMenuItem('PopupSwitchMenuItem');
+		let imagemenuitem = new PopupMenu.PopupImageMenuItem('PopupImageMenuItem', 'system-search-symbolic');		
+
+		// Assemble all menu items
+		this.menu.addMenuItem(popupMenuExpander);
+		// This is a menu separator
+		this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+		this.menu.addMenuItem(menuitem);
+		this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+		this.menu.addMenuItem(switchmenuitem);
+		this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+		this.menu.addMenuItem(imagemenuitem);
+		*/
+
+		let popupPlayButton = new St.Bin({ style_class: "panel-button", 
+						reactive: true,
+						can_focus: true,
+						x_fill: true,
+						y_fill: true,
+						track_hover: true});
+		let playIcon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
+						style_class: "system-status-icon" });
+		let label = new St.Label({ text: "Label" });
+
+		//popupPlayButton.add_child(label);
+		popupPlayButton.set_child(playIcon);
+
+		//this.menu.box.add(popupPlayButton);
+		this.menu.box.add(this.main_box);
+	},
+	
+	initSimple: function()
+	{
+		// construct tray ui
 		this.main_box = new St.BoxLayout();
 
 		this.button = new St.Bin({ style_class: "panel-button",
@@ -234,6 +345,8 @@ let tray =
 		this.main_box.add_child(this.prev_button);
 		this.main_box.add_child(this.button);
 		this.main_box.add_child(this.next_button);
+
+		this.actor.add_child(this.main_box);
 	},
 
 	show: function()
@@ -241,7 +354,8 @@ let tray =
 		if (!this.trayed)
 		{
 			this.trayed = true;
-			Main.panel._rightBox.insert_child_at_index(this.main_box, 0);
+			//Main.panel._rightBox.insert_child_at_index(this.main_box, 0);
+			Main.panel.addToStatusArea("cmus-status", this, 0, "right");
 		}
 	},
 
@@ -250,7 +364,8 @@ let tray =
 		if (this.trayed)
 		{
 			this.trayed = false;
-			Main.panel._rightBox.remove_child(this.main_box);
+			//Main.panel._rightBox.remove_child(this.main_box);
+			this.destroy();
 		}
 	}, 
 
@@ -276,7 +391,8 @@ let tray =
 				break;
 		}
 	}
-};
+});
+let tray = null;
 
 // cmus controller
 let cmus =
@@ -370,12 +486,93 @@ let cmus =
 
 let enabled = false; // false to stop updating the status
 
+// re-load settings from gsettings
+function updateSettings()
+{
+	settings.updateIntervalMs = gsettings.get_int(Shared.updateIntervalKey);
+
+	settings.notification.enabled = gsettings.get_boolean(Shared.enableNotKey);
+	settings.notification.hPos = gsettings.get_int(Shared.notPosXKey);
+	settings.notification.vPos = gsettings.get_int(Shared.notPosYKey);
+
+	settings.notification.fadeStartTime = gsettings.get_int(Shared.notFadeStartKey);
+	settings.notification.fadeDuration = gsettings.get_int(Shared.notFadeDurationKey);
+
+	settings.trayFormat = gsettings.get_string(Shared.trayFormatKey);
+	settings.notifyFormat = gsettings.get_string(Shared.notFormatKey);
+
+	const newBindsEnabled = gsettings.get_boolean(Shared.enableBindsKey);
+	if (newBindsEnabled != settings.bindings.enabled)
+	{
+		if (newBindsEnabled)
+		{
+			if (!keys.bound)
+			{
+				keys.init();
+				keys.addBinding(settings.bindings.play, () => { cmus.play_action(); });
+				keys.addBinding(settings.bindings.back, () => { cmus.back(); });
+				keys.addBinding(settings.bindings.next, () => { cmus.next(); });
+				keys.bound = true;
+			}
+		}
+		else
+		{
+
+			if (keys.bound) 
+			{
+				keys.detach();
+				keys.bound = false;
+			}
+		}
+
+		settings.bindings.enabled = newBindsEnabled;
+	}
+
+	const newPlayBind = "<alt>" + gsettings.get_string(Shared.playBindKey);
+	const newPrevBind = "<alt>" + gsettings.get_string(Shared.prevBindKey);
+	const newNextBind = "<alt>" + gsettings.get_string(Shared.nextBindKey);
+
+	if ((settings.bindings.play != newPlayBind) || (settings.bindings.prev != newPrevBind) || (settigns.bindings.next != newNextBind))
+	{
+		settings.bindings.play = newPlayBind;
+		settings.bindings.prev = newPrevBind;
+		settings.bindings.next = newNextBind;
+
+		keys.detach();
+		keys.bound = false;
+		keys.init();
+		keys.addBinding(settings.bindings.play, () => { cmus.play_action(); });
+		keys.addBinding(settings.bindings.back, () => { cmus.back(); });
+		keys.addBinding(settings.bindings.next, () => { cmus.next(); });
+		keys.bound = true;
+	}
+
+	const newSimpleTray = gsettings.get_boolean(Shared.simpleTrayKey);
+	if (newSimpleTray != settings.simpleTray)
+	{
+		settings.simpleTray = newSimpleTray;
+		if (tray != null)
+		{
+			if (tray.trayed) 
+			{
+				tray.hide();
+				tray = new trayItem;
+				tray.show();
+			}
+		}
+	}
+
+	gsettings.set_boolean(Shared.needsUpdateKey, false);
+}
+
 // status update function
 function updateStatus()
 {
 	cmus.updateStatus();
 
-	if (cmus.updated)
+	if (gsettings.get_boolean(Shared.needsUpdateKey)) updateSettings();
+
+	if (cmus.updated && settings.notification.enabled)
 	{
 		notification.setText(settings.format(settings.notifyFormat));
 		notification.show();
@@ -396,22 +593,30 @@ function updateStatus()
 			break;
 	}
 
-	if (enabled) MainLoop.timeout_add(250, updateStatus);
+	if (settings.updated) { notification.show(); settings.updated = false; }
+
+	if (enabled) MainLoop.timeout_add(settings.updateIntervalMs, updateStatus);
 }
 
 // extension functions
 function init()
 {
-	tray.init();
+	gsettings = Shared.getSettings(Shared.settingsSchema);
+	updateSettings();
 }
 
 function enable()
 {
-	keys.init();
-	keys.addBinding("<alt>c", () => { cmus.play_action(); });
-	keys.addBinding("<alt>x", () => { cmus.back(); });
-	keys.addBinding("<alt>v", () => { cmus.next(); });
+	if (!keys.bound)
+	{
+		keys.init();
+		keys.addBinding(settings.bindings.play, () => { cmus.play_action(); });
+		keys.addBinding(settings.bindings.back, () => { cmus.back(); });
+		keys.addBinding(settings.bindings.next, () => { cmus.next(); });
+		keys.bound = true;
+	}
 
+	tray = new trayItem;
 	tray.show();
 
 	enabled = true;
@@ -424,7 +629,11 @@ function disable()
 
 	notification.hide(notification.hideIndex);
 
-	keys.detach();
+	if (keys.bound)
+	{
+		keys.detach();
+		keys.bound = false;
+	}
 
 	enabled = false;
 }
