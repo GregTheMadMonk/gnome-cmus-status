@@ -190,6 +190,9 @@ let prefs =
 		this.np.y = gsettings.get_int(Shared.notPosYKey);
 
 		this.widgets.enableBinds.set_active(gsettings.get_boolean(Shared.enableBindsKey));
+		this.widgets.simpleTray.set_active(gsettings.get_boolean(Shared.simpleTrayKey));
+		if (this.widgets.simpleTray.get_active()) this.widgets.simpleTray.set_label("Tray: control buttons");
+		else this.widgets.simpleTray.set_label("Tray: opens popup");
 		this.widgets.enableNot.set_active(gsettings.get_boolean(Shared.enableNotKey));
 
 		this.widgets.notFadeStartAdj.set_value(gsettings.get_int(Shared.notFadeStartKey));

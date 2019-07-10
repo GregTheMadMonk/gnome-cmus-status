@@ -193,6 +193,7 @@ const trayItem = new Lang.Class({
 	main_box: null, // container for all tray ui
 	prev_button: null, button: null, next_button: null, // playback buttons
 	status_label: null, status_icon: null, // middle button contents
+	popup_status_icon: null, 
 	trayed: false, // is system stray ui showed?
 	caption: "tray label", // label caption
 
@@ -231,57 +232,38 @@ const trayItem = new Lang.Class({
 
 		this.actor.add_child(this.main_box);
 
-		// construct popup
-		/*
-		// This is an example of PopupSubMenuMenuItem, a menu expander
-		let popupMenuExpander = new PopupMenu.PopupSubMenuMenuItem('PopupSubMenuMenuItem');
-	
-		// This is an example of PopupMenuItem, a menu item. We will use this to add as a submenu
-		let submenu = new PopupMenu.PopupMenuItem('PopupMenuItem');
+		// create popup
+		let controlItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
 
-		// A new label
-		let label = new St.Label({text:'Item 1'});
+		let controlButtonPlay = new St.Button({ style_class: "system-menu-action",
+							reactive: true,
+							can_focus: true,
+							track_hover: true });
+		this.popup_status_icon = new St.Icon({ icon_name: "media-playback-pause-symbolic" });
+		let controlButtonPrev = new St.Button({ style_class: "system-menu-action",
+							reactive: true,
+							can_focus: true,
+							track_hover: true });
+		let prevIcon = new St.Icon({ icon_name: "media-skip-forward-symbolic-rtl" });
+		let controlButtonNext = new St.Button({	style_class: "system-menu-action", 
+							reactive: true,
+							can_focus: true,
+							track_hover: true });
+		let nextIcon = new St.Icon({ icon_name: "media-skip-forward-symbolic" });
 
-		// Add the label and submenu to the menu expander
-		popupMenuExpander.menu.addMenuItem(submenu);
-		popupMenuExpander.menu.box.add(label);
-		
-		// The CSS from our file is automatically imported
-		// You can add custom styles like this
-		// REMOVE THIS AND SEE WHAT HAPPENS
-		popupMenuExpander.menu.box.style_class = 'PopupSubMenuMenuItemStyle';
-			
-		// Other standard menu items
-		let menuitem = new PopupMenu.PopupMenuItem('PopupMenuItem');
-		let switchmenuitem = new PopupMenu.PopupSwitchMenuItem('PopupSwitchMenuItem');
-		let imagemenuitem = new PopupMenu.PopupImageMenuItem('PopupImageMenuItem', 'system-search-symbolic');		
+		controlButtonPrev.set_child(prevIcon);
+		controlButtonPlay.set_child(this.popup_status_icon);
+		controlButtonNext.set_child(nextIcon);
 
-		// Assemble all menu items
-		this.menu.addMenuItem(popupMenuExpander);
-		// This is a menu separator
-		this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-		this.menu.addMenuItem(menuitem);
-		this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-		this.menu.addMenuItem(switchmenuitem);
-		this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-		this.menu.addMenuItem(imagemenuitem);
-		*/
+		controlButtonPrev.connect("clicked", () => { cmus.prev(); });
+		controlButtonPlay.connect("clicked", () => { cmus.play_action(); });
+		controlButtonNext.connect("clicked", () => { cmus.next(); });
 
-		let popupPlayButton = new St.Bin({ style_class: "panel-button", 
-						reactive: true,
-						can_focus: true,
-						x_fill: true,
-						y_fill: true,
-						track_hover: true});
-		let playIcon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
-						style_class: "system-status-icon" });
-		let label = new St.Label({ text: "Label" });
+		controlItem.actor.add_actor(controlButtonPrev);
+		controlItem.actor.add_actor(controlButtonPlay);
+		controlItem.actor.add_actor(controlButtonNext);
 
-		//popupPlayButton.add_child(label);
-		popupPlayButton.set_child(playIcon);
-
-		//this.menu.box.add(popupPlayButton);
-		this.menu.box.add(this.main_box);
+		this.menu.addMenuItem(controlItem);
 	},
 	
 	initSimple: function()
@@ -354,7 +336,6 @@ const trayItem = new Lang.Class({
 		if (!this.trayed)
 		{
 			this.trayed = true;
-			//Main.panel._rightBox.insert_child_at_index(this.main_box, 0);
 			Main.panel.addToStatusArea("cmus-status", this, 0, "right");
 		}
 	},
@@ -364,7 +345,6 @@ const trayItem = new Lang.Class({
 		if (this.trayed)
 		{
 			this.trayed = false;
-			//Main.panel._rightBox.remove_child(this.main_box);
 			this.destroy();
 		}
 	}, 
@@ -388,6 +368,19 @@ const trayItem = new Lang.Class({
 				break;
 			case "playing":
 				this.status_icon.icon_name = "media-playback-start-symbolic";
+				break;
+		}
+		
+		if (this.popup_status_icon) switch (newStatus)
+		{
+			case "off": case "stopped":
+				this.popup_status_icon.icon_name = "media-playback-stop-symbolic";
+				break;
+			case "playing":
+				this.popup_status_icon.icon_name = "media-playback-pause-symbolic";
+				break;
+			case "paused":
+				this.popup_status_icon.icon_name = "media-playback-start-symbolic";
 				break;
 		}
 	}
@@ -532,7 +525,7 @@ function updateSettings()
 	const newPrevBind = "<alt>" + gsettings.get_string(Shared.prevBindKey);
 	const newNextBind = "<alt>" + gsettings.get_string(Shared.nextBindKey);
 
-	if ((settings.bindings.play != newPlayBind) || (settings.bindings.prev != newPrevBind) || (settigns.bindings.next != newNextBind))
+	if ((settings.bindings.play != newPlayBind) || (settings.bindings.prev != newPrevBind) || (settings.bindings.next != newNextBind))
 	{
 		settings.bindings.play = newPlayBind;
 		settings.bindings.prev = newPrevBind;
