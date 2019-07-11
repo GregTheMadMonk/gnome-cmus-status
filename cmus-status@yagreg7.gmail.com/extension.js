@@ -274,7 +274,7 @@ const trayItem = new Lang.Class({
 		controlButtonPlay.set_child(this.popup_status_icon);
 		controlButtonNext.set_child(nextIcon);
 
-		controlButtonPrev.connect("clicked", () => { cmus.prev(); });
+		controlButtonPrev.connect("clicked", () => { cmus.back(); });
 		controlButtonPlay.connect("clicked", () => { cmus.play_action(); });
 		controlButtonNext.connect("clicked", () => { cmus.next(); });
 
