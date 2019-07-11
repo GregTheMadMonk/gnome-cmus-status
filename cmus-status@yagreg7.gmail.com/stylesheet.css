@@ -18,7 +18,13 @@
 	margin: 10px;
 }
 
-.popup-control-panel
+.popup-time-label
 {
-	margin: 5px;
+	text-align: center;
+}
+
+.popup-time-bar
+{
+	text-align: center;
+	margin: .5em;
 }

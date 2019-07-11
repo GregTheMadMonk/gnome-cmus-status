@@ -1,5 +1,6 @@
 // imports
 const Clutter	= imports.gi.Clutter;
+const Gio 	= imports.gi.Gio;
 const GLib 	= imports.gi.GLib;
 const Lang 	= imports.lang;
 const Main 	= imports.ui.main;
@@ -9,6 +10,7 @@ const Meta	= imports.gi.Meta;
 const PanelMenu	= imports.ui.panelMenu;
 const PopupMenu	= imports.ui.popupMenu;
 const Shell 	= imports.gi.Shell;
+const Slider	= imports.ui.slider;
 const St	= imports.gi.St;
 const Tweener	= imports.ui.tweener;
 
@@ -196,6 +198,8 @@ const trayItem = new Lang.Class({
 	popup_status_icon: null, 
 	trayed: false, // is system stray ui showed?
 	caption: "tray label", // label caption
+	time_label: null, // popup labels that display track current time/duration
+	progress_bar: null, // bar that shows song progress
 
 	_init: function()
 	{	// tray initialization
@@ -233,6 +237,21 @@ const trayItem = new Lang.Class({
 		this.actor.add_child(this.main_box);
 
 		// create popup
+		let progressItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
+
+		let progressBox = new St.Bin({ style_class: "popup-time-bar", reactive: false, can_focus: false, x_fill: true, y_fill: false, track_hover: false });
+
+		this.progress_bar = new Slider.Slider(0.5);
+		this.progress_bar.connect("value-changed", () => { cmus.setPosition(this.progress_bar.value); });
+		progressBox.set_child(this.progress_bar.actor);
+		progressItem.actor = progressBox;
+
+		let timeItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
+
+		this.time_label = new St.Label({ text: "time / duration", style_class: "popup-time-label" });
+
+		timeItem.actor = this.time_label;
+
 		let controlItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
 
 		let controlButtonPlay = new St.Button({ style_class: "system-menu-action",
@@ -263,6 +282,8 @@ const trayItem = new Lang.Class({
 		controlItem.actor.add_actor(controlButtonPlay);
 		controlItem.actor.add_actor(controlButtonNext);
 
+		this.menu.addMenuItem(progressItem);
+		this.menu.addMenuItem(timeItem);
 		this.menu.addMenuItem(controlItem);
 	},
 	
@@ -383,6 +404,25 @@ const trayItem = new Lang.Class({
 				this.popup_status_icon.icon_name = "media-playback-start-symbolic";
 				break;
 		}
+	},
+
+	// updates time
+	setTime: function(time, duration)
+	{
+		if (duration == 0)
+		{
+			if (this.time_label) this.time_label.set_text("-:-- / -:--");
+			if (this.progress_bar) this.progress_bar.setValue(0);
+		}
+		else
+		{
+			const t_sec = time % 60;
+			const t_min = (time - t_sec) / 60;
+			const d_sec = duration % 60;
+			const d_min = (duration - d_sec) / 60;
+			if (this.time_label) this.time_label.set_text(t_min + ":" + t_sec + " / " + d_min + ":" + d_sec);
+			if (this.progress_bar) this.progress_bar.setValue(time / duration);
+		}
 	}
 });
 let tray = null;
@@ -391,7 +431,22 @@ let tray = null;
 let cmus =
 {
 	state: "off",
-	track: { title: "title", album: "album", artist: "artist" },
+	track: 
+	{ 
+		title: "title", 
+		album: "album", 
+		artist: "artist", 
+		time: 0, 
+		duration: 0 
+	},
+	default_track: 
+	{ 
+		title: "title", 
+		album: "album", 
+		artist: "artist", 
+		time: 0, 
+		duration: 0 
+	},
 	updated: false, // true if track info changed
 
 	updateStatus: function()
@@ -400,7 +455,7 @@ let cmus =
 		if (std[2].toString() != "") // check if theere are any errors. If cmus is off, stderr is also not empty
 		{
 			this.state = "off";
-			this.track = { title: "title", album: "album", artist: "artist" };
+			this.track = this.default_track;
 		}
 		else
 		{
@@ -412,7 +467,7 @@ let cmus =
 
 			if (this.state == "stopped")
 			{
-				this.track = { title: "title", album: "album", artist: "artist" };
+				this.track = this.default_track;
 			}
 			else
 			{
@@ -421,6 +476,9 @@ let cmus =
 				const album = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"tag album \" | sed \"s/tag\\salbum\\s*//g\"'")[1].toString().replace("\n", "");
 				const artist = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"tag artist \" | sed \"s/tag\\sartist\\s*//g\"'")[1].toString().replace("\n", "");
 
+				const duration = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"duration \" | sed \"s/duration\\s*//g\"'")[1].toString().replace("\n", "");
+				const time = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"position \" | sed \"s/position\\s*//g\"'")[1].toString().replace("\n", "");
+
 				if ((this.track.title != title) || (this.track.album != album) || (this.track.artist != artist))
 				{
 					this.track.title = title;
@@ -428,6 +486,13 @@ let cmus =
 					this.track.artist = artist;
 
 					this.updated = true;
+				}
+
+				// some parameters do not require showing notification
+				if ((this.track.time != time) || (this.track.duration != duration))
+				{
+					this.track.time = time;
+					this.track.duration = duration;
 				}
 			}
 		}
@@ -474,6 +539,12 @@ let cmus =
 				this.pause();
 				break;
 		}
+	},
+
+	setPosition: function(position)
+	{
+		const positionSec = Math.floor(this.track.duration * position);
+		GLib.spawn_command_line_sync("cmus-remote -k " + positionSec);
 	}
 };
 
@@ -577,14 +648,18 @@ function updateStatus()
 	{
 		case "off":
 			tray.setCaption("cmus is off");
+			tray.setTime(0, 0);
 			break;
 		case "stopped":
 			tray.setCaption("not playing");
+			tray.setTime(0, 0);
 			break;
 		case "paused": case "playing":
 			tray.setCaption(settings.format(settings.trayFormat));
+			tray.setTime(cmus.track.time, cmus.track.duration);
 			break;
 	}
+
 
 	if (settings.updated) { notification.show(); settings.updated = false; }
 
