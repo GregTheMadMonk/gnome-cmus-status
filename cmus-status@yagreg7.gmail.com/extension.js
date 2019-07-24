@@ -670,7 +670,6 @@ function updateStatus()
 function init()
 {
 	gsettings = Shared.getSettings(Shared.settingsSchema);
-	updateSettings();
 }
 
 function enable()
@@ -688,6 +687,8 @@ function enable()
 	tray.show();
 
 	enabled = true;
+	updateSettings();	// updateStatus() calls updateSettings() only if settings-updated is true
+				// to be sure settings are loaded, updateSettings() must be called manually
 	updateStatus();
 }
 
