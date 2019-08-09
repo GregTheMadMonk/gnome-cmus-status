@@ -17,17 +17,17 @@
 			<description>Enable extension to map keys to player actions</description>
 		</key>
 		<key name="play-bind" type="s">
-			<default>"c"</default>
+			<default>"mplay"</default>
 			<summary>Play bind</summary>
 			<description>Key that is usd with alt as a play bind </description>
 		</key>
 		<key name="prev-bind" type="s">
-			<default>"x"</default>
+			<default>"mprev"</default>
 			<summary>Previous bind</summary>
 			<description>Key that is usd with alt as a previous bind </description>
 		</key>
 		<key name="next-bind" type="s">
-			<default>"v"</default>
+			<default>"mnext"</default>
 			<summary>Next bind</summary>
 			<description>Key that is usd with alt as a next bind </description>
 		</key>

@@ -108,7 +108,11 @@
               <object class="GtkComboBoxText" id="pref_play_bind">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="active_id">mplay</property>
                 <items>
+                  <item id="mplay" translatable="yes">Multimedia Play</item>
+                  <item id="mprev" translatable="yes">Multimedia Previous</item>
+                  <item id="mnext" translatable="yes">Multimedia Next</item>
                   <item id="a" translatable="yes">&lt;alt&gt;a</item>
                   <item id="b" translatable="yes">&lt;alt&gt;b</item>
                   <item id="c" translatable="yes">&lt;alt&gt;c</item>
@@ -171,7 +175,11 @@
               <object class="GtkComboBoxText" id="pref_prev_bind">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="active_id">mprev</property>
                 <items>
+                  <item id="mplay" translatable="yes">Multimedia Play</item>
+                  <item id="mprev" translatable="yes">Multimedia Previous</item>
+                  <item id="mnext" translatable="yes">Multimedia Next</item>
                   <item id="a" translatable="yes">&lt;alt&gt;a</item>
                   <item id="b" translatable="yes">&lt;alt&gt;b</item>
                   <item id="c" translatable="yes">&lt;alt&gt;c</item>
@@ -234,7 +242,11 @@
               <object class="GtkComboBoxText" id="pref_next_bind">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="active_id">mnext</property>
                 <items>
+                  <item id="mplay" translatable="yes">Multimedia Play</item>
+                  <item id="mprev" translatable="yes">Multimedia Previous</item>
+                  <item id="mnext" translatable="yes">Multimedia Next</item>
                   <item id="a" translatable="yes">&lt;alt&gt;a</item>
                   <item id="b" translatable="yes">&lt;alt&gt;b</item>
                   <item id="c" translatable="yes">&lt;alt&gt;c</item>
@@ -284,6 +296,18 @@
       </packing>
     </child>
     <child>
+      <object class="GtkLabel">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="label" translatable="yes">Warning: Setting media keys as binding may require to restart the shell</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkToggleButton" id="pref_simple_tray">
         <property name="label" translatable="yes">Tray: control buttons</property>
         <property name="visible">True</property>
@@ -296,7 +320,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">3</property>
+        <property name="position">4</property>
       </packing>
     </child>
     <child>
@@ -332,7 +356,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">4</property>
+        <property name="position">5</property>
       </packing>
     </child>
     <child>
@@ -368,7 +392,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">5</property>
+        <property name="position">6</property>
       </packing>
     </child>
     <child>
@@ -380,7 +404,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">6</property>
+        <property name="position">7</property>
       </packing>
     </child>
     <child>
@@ -395,7 +419,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">7</property>
+        <property name="position">8</property>
       </packing>
     </child>
     <child>
@@ -432,7 +456,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">8</property>
+        <property name="position">9</property>
       </packing>
     </child>
     <child>
@@ -469,7 +493,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">9</property>
+        <property name="position">10</property>
       </packing>
     </child>
     <child>
@@ -481,7 +505,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">10</property>
+        <property name="position">11</property>
       </packing>
     </child>
     <child>
@@ -532,7 +556,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">11</property>
+        <property name="position">12</property>
       </packing>
     </child>
     <child>
@@ -583,7 +607,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">12</property>
+        <property name="position">13</property>
       </packing>
     </child>
     <child>
@@ -635,7 +659,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">13</property>
+        <property name="position">14</property>
       </packing>
     </child>
     <child>
@@ -650,7 +674,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">14</property>
+        <property name="position">15</property>
       </packing>
     </child>
     <child>
@@ -662,7 +686,7 @@
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
-        <property name="position">15</property>
+        <property name="position">16</property>
       </packing>
     </child>
   </object>

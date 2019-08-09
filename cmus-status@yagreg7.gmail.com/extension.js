@@ -113,11 +113,28 @@ let keys =
 		{
 			global.display.ungrab_accelerator(this.bindings[i].action);
 			Main.wm.allowKeybinding(this.bindings[i].name, Shell.ActionMode.NONE);
+			log("cmus-status: Unbound " + this.bindings[i].binding + ": name: " + this.bindings[i].name + "; №" + this.bindings[i].code);
 		}
 
 		this.bindings = [];
 
 		global.display.disconnect(this.connectId);
+	},
+
+	// converts bind ID from settings to accelerator
+	bindIdToAccel: function(bindId)
+	{
+		switch (bindId)
+		{
+			case "mplay":
+				return "XF86AudioPlay";
+			case "mnext":
+				return "XF86AudioNext";
+			case "mprev":
+				return "XF86AudioPrev";
+			default:
+				return "<alt>" + bindId;
+		}
 	}
 };
 
@@ -592,14 +609,16 @@ function updateSettings()
 		settings.bindings.enabled = newBindsEnabled;
 	}
 
-	const newPlayBind = "<alt>" + gsettings.get_string(Shared.playBindKey);
-	const newPrevBind = "<alt>" + gsettings.get_string(Shared.prevBindKey);
-	const newNextBind = "<alt>" + gsettings.get_string(Shared.nextBindKey);
+	const newPlayBind = keys.bindIdToAccel(gsettings.get_string(Shared.playBindKey));
+	const newPrevBind = keys.bindIdToAccel(gsettings.get_string(Shared.prevBindKey));
+	const newNextBind = keys.bindIdToAccel(gsettings.get_string(Shared.nextBindKey));
+
+	log("cmus-status: New binds play/prev/next - " + newPlayBind + "/" + newPrevBind + "/" + newNextBind);
 
 	if ((settings.bindings.play != newPlayBind) || (settings.bindings.prev != newPrevBind) || (settings.bindings.next != newNextBind))
 	{
 		settings.bindings.play = newPlayBind;
-		settings.bindings.prev = newPrevBind;
+		settings.bindings.back = newPrevBind;
 		settings.bindings.next = newNextBind;
 
 		keys.detach();
@@ -674,15 +693,6 @@ function init()
 
 function enable()
 {
-	if (!keys.bound)
-	{
-		keys.init();
-		keys.addBinding(settings.bindings.play, () => { cmus.play_action(); });
-		keys.addBinding(settings.bindings.back, () => { cmus.back(); });
-		keys.addBinding(settings.bindings.next, () => { cmus.next(); });
-		keys.bound = true;
-	}
-
 	tray = new trayItem;
 	tray.show();
 
