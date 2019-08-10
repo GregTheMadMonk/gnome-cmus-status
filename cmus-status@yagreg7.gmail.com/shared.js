@@ -29,3 +29,22 @@ function getSettings(schema)
 	log("cmus-status: Schema found. Returning gsettings");
 	return new Gio.Settings({ schema: schema });
 }
+
+// converts bind IS from settings to accelerator
+function bindIdToAccel(bindId)
+{
+	// if the first character is "#" we should just remove it
+	if (bindId.charAt(0) == '#') return bindId.substr(1);
+
+	switch (bindId)
+	{
+		case "mplay":
+			return "XF86AudioPlay";
+		case "mnext":
+			return "XF86AudioNext";
+		case "mprev":
+			return "XF86AudioPrev";
+		default:
+			return "<alt>" + bindId;
+	}
+}

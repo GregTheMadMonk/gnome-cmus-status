@@ -119,22 +119,6 @@ let keys =
 		this.bindings = [];
 
 		global.display.disconnect(this.connectId);
-	},
-
-	// converts bind ID from settings to accelerator
-	bindIdToAccel: function(bindId)
-	{
-		switch (bindId)
-		{
-			case "mplay":
-				return "XF86AudioPlay";
-			case "mnext":
-				return "XF86AudioNext";
-			case "mprev":
-				return "XF86AudioPrev";
-			default:
-				return "<alt>" + bindId;
-		}
 	}
 };
 
@@ -609,9 +593,9 @@ function updateSettings()
 		settings.bindings.enabled = newBindsEnabled;
 	}
 
-	const newPlayBind = keys.bindIdToAccel(gsettings.get_string(Shared.playBindKey));
-	const newPrevBind = keys.bindIdToAccel(gsettings.get_string(Shared.prevBindKey));
-	const newNextBind = keys.bindIdToAccel(gsettings.get_string(Shared.nextBindKey));
+	const newPlayBind = Shared.bindIdToAccel(gsettings.get_string(Shared.playBindKey));
+	const newPrevBind = Shared.bindIdToAccel(gsettings.get_string(Shared.prevBindKey));
+	const newNextBind = Shared.bindIdToAccel(gsettings.get_string(Shared.nextBindKey));
 
 	log("cmus-status: New binds play/prev/next - " + newPlayBind + "/" + newPrevBind + "/" + newNextBind);
 

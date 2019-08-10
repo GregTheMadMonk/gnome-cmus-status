@@ -31,8 +31,14 @@ let prefs =
 		updateIntervalAdj: null,
 		enableBinds: null,
 		playBind: null,
+		playBindMann: null,
+		playBindTxt: null,
 		prevBind: null,
+		prevBindMann: null,
+		prevBindTxt: null,
 		nextBind: null,
+		nextBindMann: null,
+		nextBindTxt: null,
 		simpleTray: null,
 		trayFormat: null,
 		notFormat: null,
@@ -62,8 +68,14 @@ let prefs =
 		this.widgets.updateIntervalAdj = this.builder.get_object("pref_tick_interval_adj");
 		this.widgets.enableBinds = this.builder.get_object("pref_enable_binds");
 		this.widgets.playBind = this.builder.get_object("pref_play_bind");
+		this.widgets.playBindMann = this.builder.get_object("pref_play_bind_mann");
+		this.widgets.playBindTxt = this.builder.get_object("pref_play_bind_txt");
 		this.widgets.prevBind = this.builder.get_object("pref_prev_bind");
+		this.widgets.prevBindMann = this.builder.get_object("pref_prev_bind_mann");
+		this.widgets.prevBindTxt = this.builder.get_object("pref_prev_bind_txt");
 		this.widgets.nextBind = this.builder.get_object("pref_next_bind");
+		this.widgets.nextBindMann = this.builder.get_object("pref_next_bind_mann");
+		this.widgets.nextBindTxt = this.builder.get_object("pref_next_bind_txt");
 		this.widgets.simpleTray = this.builder.get_object("pref_simple_tray");
 		this.widgets.trayFormat = this.builder.get_object("pref_tray_format");
 		this.widgets.notFormat = this.builder.get_object("pref_notification_format");
@@ -102,14 +114,47 @@ let prefs =
 			gsettings.set_string(Shared.trayFormatKey, this.widgets.trayFormat.get_text());
 			gsettings.set_string(Shared.notFormatKey, this.widgets.notFormat.get_text());
 
-			gsettings.set_string(Shared.playBindKey, this.widgets.playBind.get_active_id());
-			gsettings.set_string(Shared.prevBindKey, this.widgets.prevBind.get_active_id());
-			gsettings.set_string(Shared.nextBindKey, this.widgets.nextBind.get_active_id());
+			if (this.widgets.playBindMann.get_active()) gsettings.set_string(Shared.playBindKey, "#" + this.widgets.playBindTxt.get_text());
+			else gsettings.set_string(Shared.playBindKey, this.widgets.playBind.get_active_id());
+			if (this.widgets.prevBindMann.get_active()) gsettings.set_string(Shared.prevBindKey, "#" + this.widgets.playBindTxt.get_text());
+			else gsettings.set_string(Shared.prevBindKey, this.widgets.prevBind.get_active_id());
+			if (this.widgets.nextBindMann.get_active()) gsettings.set_string(Shared.nextBindKey, "#" + this.widgets.nextBindTxt.get_text());
+			else gsettings.set_string(Shared.nextBindKey, this.widgets.nextBind.get_active_id());
 
 			gsettings.set_boolean(Shared.needsUpdateKey, true);
 		});
 
 		this.widgets.enableBinds.connect("toggled", (widget) =>
+		{
+			this.invalidateEnabled(true, false);
+		});
+
+		this.widgets.playBind.connect("changed", (widget) =>
+		{
+			this.widgets.playBindTxt.set_text(Shared.bindIdToAccel(widget.get_active_id()));
+		});
+
+		this.widgets.prevBind.connect("changed", (widget) =>
+		{
+			this.widgets.prevBindTxt.set_text(Shared.bindIdToAccel(widget.get_active_id()));
+		});
+
+		this.widgets.nextBind.connect("changed", (widget) =>
+		{
+			this.widgets.nextBindTxt.set_text(Shared.bindIdToAccel(widget.get_active_id()));
+		});
+
+		this.widgets.playBindMann.connect("toggled", (widget) =>
+		{
+			this.invalidateEnabled(true, false);
+		});
+
+		this.widgets.prevBindMann.connect("toggled", (widget) =>
+		{
+			this.invalidateEnabled(true, false);
+		});
+
+		this.widgets.nextBindMann.connect("toggled", (widget) =>
 		{
 			this.invalidateEnabled(true, false);
 		});
@@ -158,9 +203,12 @@ let prefs =
 			if (bindsEnabled) this.widgets.enableBinds.set_label("Keybindings enabled");
 			else this.widgets.enableBinds.set_label("Keybindings disabled");
 
-			this.widgets.playBind.set_sensitive(bindsEnabled);
-			this.widgets.prevBind.set_sensitive(bindsEnabled);
-			this.widgets.nextBind.set_sensitive(bindsEnabled);
+			this.widgets.playBind.set_sensitive(bindsEnabled && (!this.widgets.playBindMann.get_active()));
+			this.widgets.prevBind.set_sensitive(bindsEnabled && (!this.widgets.prevBindMann.get_active()));
+			this.widgets.nextBind.set_sensitive(bindsEnabled && (!this.widgets.nextBindMann.get_active()));
+			this.widgets.playBindTxt.set_sensitive(bindsEnabled && this.widgets.playBindMann.get_active());
+			this.widgets.prevBindTxt.set_sensitive(bindsEnabled && this.widgets.prevBindMann.get_active());
+			this.widgets.nextBindTxt.set_sensitive(bindsEnabled && this.widgets.nextBindMann.get_active());
 		}
 
 		if (notifications)
@@ -203,11 +251,29 @@ let prefs =
 		this.widgets.trayFormat.set_text(gsettings.get_string(Shared.trayFormatKey));
 		this.widgets.notFormat.set_text(gsettings.get_string(Shared.notFormatKey));
 
-		this.invalidateEnabled(true, true);
+		this.updateBindSet(this.widgets.playBind, this.widgets.playBindMann,
+				this.widgets.playBindTxt, gsettings.get_string(Shared.playBindKey));
+		this.updateBindSet(this.widgets.prevBind, this.widgets.prevBindMann,
+				this.widgets.prevBindTxt, gsettings.get_string(Shared.prevBindKey));
+		this.updateBindSet(this.widgets.nextBind, this.widgets.nextBindMann,
+				this.widgets.nextBindTxt, gsettings.get_string(Shared.nextBindKey));
 
-		this.widgets.playBind.set_active_id(gsettings.get_string(Shared.playBindKey));
-		this.widgets.prevBind.set_active_id(gsettings.get_string(Shared.prevBindKey));
-		this.widgets.nextBind.set_active_id(gsettings.get_string(Shared.nextBindKey));
+		this.invalidateEnabled(true, true);
+	},
+
+	updateBindSet: function(widget, widgetMann, widgetTxt, val)
+	{
+		if (val.charAt(0) == '#') 
+		{	// manual editing
+			widgetTxt.set_text(val.substr(1));
+			widgetMann.set_active(true);
+		}
+		else
+		{	// list box picking
+			widget.set_active_id(val);
+			widgetTxt.set_text(Shared.bindIdToAccel(val));
+			widgetMann.set_active(false);
+		}
 	}
 };
 
