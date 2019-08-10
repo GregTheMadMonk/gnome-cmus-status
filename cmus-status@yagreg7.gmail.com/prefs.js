@@ -203,6 +203,10 @@ let prefs =
 			if (bindsEnabled) this.widgets.enableBinds.set_label("Keybindings enabled");
 			else this.widgets.enableBinds.set_label("Keybindings disabled");
 
+			this.widgets.playBindMann.set_sensitive(bindsEnabled);
+			this.widgets.prevBindMann.set_sensitive(bindsEnabled);
+			this.widgets.nextBindMann.set_sensitive(bindsEnabled);
+
 			this.widgets.playBind.set_sensitive(bindsEnabled && (!this.widgets.playBindMann.get_active()));
 			this.widgets.prevBind.set_sensitive(bindsEnabled && (!this.widgets.prevBindMann.get_active()));
 			this.widgets.nextBind.set_sensitive(bindsEnabled && (!this.widgets.nextBindMann.get_active()));
