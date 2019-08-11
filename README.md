@@ -8,6 +8,7 @@ Now extension can:
   * Multimedia play - play/pause/launch cmus
   * Multimedia previous - previous track
   * Multimedia next - next track
+
 _Note: Setting multimedia keys as bindings may require shell restart to take effect_
 * Show a notification when the song changes
 
