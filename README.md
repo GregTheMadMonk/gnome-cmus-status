@@ -11,4 +11,4 @@ A little GNOME shell extension for displaying and controlling cmus status.
 - [ ] More keybindings (?)
 
 ## Installation
-Clone download the repository and run __make__ or [install from GNOME extensions](https://extensions.gnome.org/extension/1934/cmus-status/). Remember that you need to have cmus and cmus-remote installed.
+Clone download the repository and run __make__ or just [install it from GNOME extensions](https://extensions.gnome.org/extension/1934/cmus-status/). Remember that you need to have cmus and cmus-remote installed.
