@@ -30,7 +30,7 @@ function getSettings(schema)
 	return new Gio.Settings({ schema: schema });
 }
 
-// converts bind IS from settings to accelerator
+// converts bind ID from settings to accelerator
 function bindIdToAccel(bindId)
 {
 	// if the first character is "#" we should just remove it
