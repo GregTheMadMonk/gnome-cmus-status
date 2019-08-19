@@ -1,7 +1,7 @@
 # gnome-cmus-status
 A little GNOME shell extension for displaying and controlling cmus status.
 
-Fetaure roadmap:
+## Feature roadmap:
 - [x] Launch cmus in a new terminal window
 - [x] Add cmus control buttons (or popup caller) to right system tray with track info diplayed
 - [x] Add simple key bindings to control playback (_note: setting multimedia keys as bindings may require shell restart to take effect_)
