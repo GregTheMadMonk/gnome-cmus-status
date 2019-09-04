@@ -81,7 +81,7 @@ let keys =
 
 	addBinding: function(binding, callback)
 	{	// create binding
-		const keyAction = global.display.grab_accelerator(binding);
+		const keyAction = global.display.grab_accelerator(binding, Meta.KeyBindingFlags.NONE);
 		if (keyAction == Meta.KeyBindingAction.NONE)
 		{
 			log("cmus-status: Unable to bind " + binding);
