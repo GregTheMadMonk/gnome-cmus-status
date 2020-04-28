@@ -243,7 +243,7 @@ const trayItem = new Lang.Class({
 		let progressBox = new St.Bin({ style_class: "popup-time-bar", reactive: false, can_focus: false, x_fill: true, y_fill: false, track_hover: false });
 
 		this.progress_bar = new Slider.Slider(0.5);
-		this.progress_bar.connect("value-changed", () => { cmus.setPosition(this.progress_bar.value); });
+		this.progress_bar.connect("drag-end", () => { cmus.setPosition(this.progress_bar.value); });
 		progressBox.set_child(this.progress_bar.actor);
 		progressItem.actor = progressBox;
 
@@ -264,7 +264,7 @@ const trayItem = new Lang.Class({
 							reactive: true,
 							can_focus: true,
 							track_hover: true });
-		let prevIcon = new St.Icon({ icon_name: "media-skip-forward-symbolic-rtl" });
+		let prevIcon = new St.Icon({ icon_name: "media-skip-backward-symbolic" });
 		let controlButtonNext = new St.Button({	style_class: "system-menu-action", 
 							reactive: true,
 							can_focus: true,
@@ -322,7 +322,7 @@ const trayItem = new Lang.Class({
 						x_fill: true,
 						y_fill: false,
 						track_hover: true });
-		let prev_icon = new St.Icon({ icon_name: "media-skip-forward-symbolic-rtl",
+		let prev_icon = new St.Icon({ icon_name: "media-skip-backward-symbolic",
 						style_class: "system-status-icon" });
 
 		this.prev_button.set_child(prev_icon);
@@ -413,7 +413,7 @@ const trayItem = new Lang.Class({
 		if (duration == 0)
 		{
 			if (this.time_label) this.time_label.set_text("-:-- / -:--");
-			if (this.progress_bar) this.progress_bar.setValue(0);
+			if (this.progress_bar) this.progress_bar.value = 0;
 		}
 		else
 		{
@@ -422,7 +422,7 @@ const trayItem = new Lang.Class({
 			const d_sec = duration % 60;
 			const d_min = (duration - d_sec) / 60;
 			if (this.time_label) this.time_label.set_text(t_min + ":" + t_sec + " / " + d_min + ":" + d_sec);
-			if (this.progress_bar) this.progress_bar.setValue(time / duration);
+			if (this.progress_bar) this.progress_bar.value = time / duration;
 		}
 	}
 });

@@ -53,7 +53,6 @@ let prefs =
 			b02: null, b12: null, b22: null
 		},
 		infoLabel: null
-
 	},
 
 	init: function()
