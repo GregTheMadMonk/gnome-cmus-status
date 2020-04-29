@@ -202,6 +202,8 @@ const trayItem = new Lang.Class({
 	time_label: null, // popup labels that display track current time/duration
 	progress_bar: null, // bar that shows song progress
 
+	bar_dragging: false, // lock bar from updating while dragging
+
 	_init: function()
 	{	// tray initialization
 		this.parent(0.5, "cmus-status", false);
@@ -240,20 +242,22 @@ const trayItem = new Lang.Class({
 		// create popup
 		let progressItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
 
-		let progressBox = new St.Bin({ style_class: "popup-time-bar", reactive: false, can_focus: false, x_fill: true, y_fill: false, track_hover: false });
+		this.progress_bar = new Slider.Slider(0.5, { style_class: "popup-time-bar", x_fill: true });
+		this.progress_bar.connect("drag-end", () => { this.bar_dragging = false; cmus.setPosition(this.progress_bar.value); });
+		this.progress_bar.connect("drag-begin", () => { this.bar_dragging = true; });
+		progressItem.actor.add(this.progress_bar);
+		progressItem.actor.connect("button-press-event", (actor, event) => { return progress_bar.startDragging(event); });
 
-		this.progress_bar = new Slider.Slider(0.5);
-		this.progress_bar.connect("drag-end", () => { cmus.setPosition(this.progress_bar.value); });
-		progressBox.set_child(this.progress_bar.actor);
-		progressItem.actor = progressBox;
+		let timeItem = new PopupMenu.PopupBaseMenuItem({ style_class: "popup-time-label", reactive: false, can_focus: false });
 
-		let timeItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
+		this.time_label = new St.Label({ style_class: "popup-time-label", text: "time / duration", x_expand: true });
 
-		this.time_label = new St.Label({ text: "time / duration", style_class: "popup-time-label" });
-
-		timeItem.actor = this.time_label;
+		timeItem.actor.add_actor(this.time_label);
 
 		let controlItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
+
+		let controlBin = new St.Bin({ x_expand: true, x_fill: true });
+		let controlBox = new St.BoxLayout({ style_class: "popup-control-panel", x_align: Clutter.ActorAlign.CENTER });
 
 		let controlButtonPlay = new St.Button({ style_class: "system-menu-action",
 							reactive: true,
@@ -279,9 +283,15 @@ const trayItem = new Lang.Class({
 		controlButtonPlay.connect("clicked", () => { cmus.play_action(); });
 		controlButtonNext.connect("clicked", () => { cmus.next(); });
 
-		controlItem.actor.add_actor(controlButtonPrev);
-		controlItem.actor.add_actor(controlButtonPlay);
-		controlItem.actor.add_actor(controlButtonNext);
+		controlBox.add_child(controlButtonPrev);
+		controlBox.add_child(controlButtonPlay);
+		controlBox.add_child(controlButtonNext);
+
+		controlBin.set_child(controlBox);
+
+		controlItem.actor.add_actor(controlBin);
+		//controlItem.actor.add_actor(controlButtonPlay);
+		//controlItem.actor.add_actor(controlButtonNext);
 
 		this.menu.addMenuItem(progressItem);
 		this.menu.addMenuItem(timeItem);
@@ -413,16 +423,16 @@ const trayItem = new Lang.Class({
 		if (duration == 0)
 		{
 			if (this.time_label) this.time_label.set_text("-:-- / -:--");
-			if (this.progress_bar) this.progress_bar.value = 0;
+			if (this.progress_bar) if (!this.bar_dragging) this.progress_bar.value = 0;
 		}
 		else
 		{
-			const t_sec = time % 60;
+			const t_sec = (time % 60 >= 10) ? time % 60 : "0" + time % 60;
 			const t_min = (time - t_sec) / 60;
-			const d_sec = duration % 60;
+			const d_sec = (duration % 60 >= 10) ? duration % 60 : "0" + duration % 60;
 			const d_min = (duration - d_sec) / 60;
 			if (this.time_label) this.time_label.set_text(t_min + ":" + t_sec + " / " + d_min + ":" + d_sec);
-			if (this.progress_bar) this.progress_bar.value = time / duration;
+			if (this.progress_bar) if (!this.bar_dragging) this.progress_bar.value = time / duration;
 		}
 	}
 });
