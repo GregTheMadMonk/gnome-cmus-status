@@ -452,19 +452,20 @@ let cmus =
 
 	updateStatus: function()
 	{	// recieves info from cmus-remote
-		const std = GLib.spawn_command_line_sync("cmus-remote -Q");
+		const std = GLib.spawn_command_line_sync("timeout 0.01 cmus-remote -Q");
 		if (std[2].toString() != "") // check if theere are any errors. If cmus is off, stderr is also not empty
 		{
 			this.state = "off";
 			this.track = this.default_track;
 		}
-		else
+		else if (std[1].toString() != "")
 		{
 			// resolve recieved data
-			const stdout = std[1].toString().replace(/\'/g, "\\\`"); // replace ' quotes with ` to avoid errors while parsing commands later
+			const stdout = std[1].toString().replace("/\'/g", "\\\`").split("\n"); // replace ' quotes with ` to avoid errors while parsing commands later
 
 			// get cmus status
-			this.state = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"status \" | sed \"s/status\\s*//g\"'")[1].toString().replace("\n", "");
+			//this.state = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"status \" | sed \"s/status\\s*//g\"'")[1].toString().replace("\n", "");
+			this.state = stdout[0].replace(/status\ /g, "");
 
 			if (this.state == "stopped")
 			{
@@ -473,12 +474,23 @@ let cmus =
 			else
 			{
 				// get track info
-				const title = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"tag title \" | sed \"s/tag\\stitle\\s*//g\"'")[1].toString().replace("\n", "");
-				const album = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"tag album \" | sed \"s/tag\\salbum\\s*//g\"'")[1].toString().replace("\n", "");
-				const artist = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"tag artist \" | sed \"s/tag\\sartist\\s*//g\"'")[1].toString().replace("\n", "");
+				var title = "";
+				var album = "";
+				var artist = "";
+				var duration = "";
+				var time = "";
 
-				const duration = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"duration \" | sed \"s/duration\\s*//g\"'")[1].toString().replace("\n", "");
-				const time = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"position \" | sed \"s/position\\s*//g\"'")[1].toString().replace("\n", "");
+				for (var i = 1; i < stdout.length; i++)
+				{
+					if (stdout[i].includes("tag title ")) 	title = stdout[i].replace(/tag\ title\ /g, "");
+					if (stdout[i].includes("tag album ")) 	album = stdout[i].replace(/tag\ album\ /g, "");
+					if (stdout[i].includes("tag artist ")) 	artist = stdout[i].replace(/tag\ artist\ /g, "");
+					if (stdout[i].includes("duration ")) 	duration = stdout[i].replace(/duration\ /g, "");
+					if (stdout[i].includes("position ")) 	time = stdout[i].replace(/position\ /g, "");
+
+					// in case there's no track title in tags
+					if (stdout[i].includes("file ") && (title == "")) title = stdout[i].replace(/file\ /g, "").replace(/^.*[\\\/]/g, "");
+				}
 
 				if ((this.track.title != title) || (this.track.album != album) || (this.track.artist != artist))
 				{
@@ -501,29 +513,29 @@ let cmus =
 
 	play: function()
 	{
-		GLib.spawn_command_line_sync("cmus-remote -p");
+		GLib.spawn_command_line_async("cmus-remote -p");
 	},
 
 	pause: function()
 	{
-		GLib.spawn_command_line_sync("cmus-remote -u");
+		GLib.spawn_command_line_async("cmus-remote -u");
 	},
 
 	launch: function()
 	{
 		const terminal = GLib.spawn_command_line_sync("sh -c \"gsettings get org.gnome.desktop.default-applications.terminal exec | sed \\\"s/'//g\\\"\"")[1].toString().replace("/n", "");
 		const arg = GLib.spawn_command_line_sync("sh -c \"gsettings get org.gnome.desktop.default-applications.terminal exec-arg | sed \\\"s/'//g\\\"\"")[1].toString().replace("/n", "");
-		if (terminal && arg) GLib.spawn_command_line_sync(terminal + " " + arg + " cmus");
+		if (terminal && arg) GLib.spawn_command_line_async(terminal + " " + arg + " cmus");
 	},
 
 	back: function()
 	{
-		GLib.spawn_command_line_sync("cmus-remote -r");
+		GLib.spawn_command_line_async("cmus-remote -r");
 	},
 
 	next: function()
 	{
-		GLib.spawn_command_line_sync("cmus-remote -n");
+		GLib.spawn_command_line_async("cmus-remote -n");
 	},
 
 	play_action: function()
