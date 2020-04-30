@@ -224,9 +224,9 @@ const trayItem = new Lang.Class({
 						y_fill: false,
 						track_hover: true });
 
-		let box = new St.BoxLayout();
+		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
 
-		this.status_label = new St.Label({ style_class: "tray-label", text: this.caption });
+		this.status_label = new St.Label({ text: this.caption, y_align: Clutter.ActorAlign.CENTER });
 		this.status_icon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
 						style_class: "system-status-icon" });
 
@@ -310,9 +310,9 @@ const trayItem = new Lang.Class({
 						y_fill: false,
 						track_hover: true });
 
-		let box = new St.BoxLayout();
+		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
 
-		this.status_label = new St.Label({ style_class: "tray-label", text: this.caption });
+		this.status_label = new St.Label({ text: this.caption, y_align: Clutter.ActorAlign.CENTER });
 		this.status_icon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
 						style_class: "system-status-icon" });
 

@@ -8,12 +8,6 @@
 	padding: .5em;
 }
 
-.tray-label
-{
-	padding-right: .5em;
-	text-align: center;
-}
-
 .popup-menu
 {
 }
@@ -39,20 +33,20 @@
  * Copypasted shamelessly from Canta-blue-dark-compact
  * because there's no such style in Adwaita and
  * it looks cool
+ * Also modified a liiiitle
  */
 .system-menu-action {
-  color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(150, 150, 150, 0.1);
   border-radius: 100px;
   /* wish we could do 50% */
   padding: 11px;
-  border: none;
+  border: 1px;
+  border-color: rgba(175, 175, 175, 1.0);
   -st-icon-style: symbolic;
 }
 
 .system-menu-action:hover, .system-menu-action:focus {
-  background-color: rgba(255, 255, 255, 0.12);
-  color: #FFFFFF;
-  border: none;
+  background-color: rgba(150, 150, 150, 0.2);
   padding: 11px;
 }
 
@@ -64,4 +58,3 @@
 .system-menu-action > StIcon {
   icon-size: 16px;
 }
-
