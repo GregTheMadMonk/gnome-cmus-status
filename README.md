@@ -1,5 +1,6 @@
 # gnome-cmus-status
 A little GNOME shell extension for displaying and controlling cmus status.
+
 ![Screenshot](screenshot1.png)
 
 ## Feature roadmap:
