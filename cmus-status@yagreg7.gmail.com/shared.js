@@ -32,6 +32,7 @@ function getSettings(schema)
 		{
 			let schemaSource = GioSSS.new_from_directory(schemaDir.get_path(), GioSSS.get_default(), false);
 
+			log("cmus-status: Schema found in extension subfolder. Returning gsettings");
 			return new Gio.Settings({ settings_schema: schemaSource.lookup(schema, true) });
 		} else {
 			log("cmus-status: Schema not found in extension subfolder!");
