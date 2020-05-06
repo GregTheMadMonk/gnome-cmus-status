@@ -474,7 +474,6 @@ let cmus =
 			const stdout = std[1].toString().replace("/\'/g", "\\\`").split("\n"); // replace ' quotes with ` to avoid errors while parsing commands later
 
 			// get cmus status
-			//this.state = GLib.spawn_command_line_sync("sh -c 'echo \"" + stdout + "\" | grep \"status \" | sed \"s/status\\s*//g\"'")[1].toString().replace("\n", "");
 			this.state = stdout[0].replace(/status\ /g, "");
 
 			if (this.state == "stopped")
