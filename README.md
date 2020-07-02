@@ -3,14 +3,11 @@ A little GNOME shell extension for displaying and controlling cmus status.
 
 ![Screenshot](screenshot1.png)
 
-## Feature roadmap:
+## Features:
 - [x] Launch cmus in a new terminal window
 - [x] Add cmus control buttons (or popup caller) to right system tray with track info diplayed
 - [x] Add simple key bindings to control playback (_note: setting multimedia keys as bindings may require shell restart to take effect_)
 - [x] Show a notification when the song changes
-- [ ] Show cover image / extended track info in popup
-- [ ] Show cover image in notification
-- [ ] More keybindings (?)
 
 ## Installation
 
