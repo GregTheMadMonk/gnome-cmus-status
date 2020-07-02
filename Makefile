@@ -1,12 +1,19 @@
+# carefully copied from Arc menu Makefile
+ifeq ($(strip $(DESTDIR)),)
+	INSTALLBASE := $(HOME)/.local/share/gnome-shell/extensions
+else
+	INSTALLBASE := $(DESTDIR)/usr/share/gnome-shell/extensions
+endif
+
+INSTALLNAME := cmus-status@yagreg7.gmail.com
+
 install: remove
-	glib-compile-schemas cmus-status@yagreg7.gmail.com/schemas/
-	cp -R cmus-status@yagreg7.gmail.com ~/.local/share/gnome-shell/extensions/
-	-gnome-extensions enable cmus.status@yagreg7.gmail.com
+	glib-compile-schemas $(INSTALLNAME)/schemas/
+	cp -R $(INSTALLNAME) $(INSTALLBASE)/
+	-gnome-extensions enable $(INSTALLNAME)
 zip:
-	glib-compile-schemas cmus-status@yagreg7.gmail.com/schemas
-	cd cmus-status@yagreg7.gmail.com && zip -r gnome-cmus-status.zip ./ -x *.sw* -x *old-extension.js -x *~
+	glib-compile-schemas $(INSTALLNAME)/schemas
+	cd $(INSTALLNAME) && zip -r gnome-cmus-status.zip ./ -x *.sw* -x *old-extension.js -x *~
 
 remove:
-	-rm -rf ~/.local/share/gnome-shell/extensions/cmus-status@yagreg7.gmail.com
-	-sudo rm /usr/share/glib-2.0/schemas/org.gnome.shell.extensions.cmus-status.gschema.xml
-	sudo glib-compile-schemas /usr/share/glib-2.0/schemas/
+	-rm -rf $(INSTALLBASE)/$(INSTALLNAME)
