@@ -9,6 +9,7 @@ INSTALLNAME := cmus-status@yagreg7.gmail.com
 
 install: remove
 	glib-compile-schemas $(INSTALLNAME)/schemas/
+	mkdir -p $(INSTALLBASE)
 	cp -R $(INSTALLNAME) $(INSTALLBASE)/
 	-gnome-extensions enable $(INSTALLNAME)
 zip:
