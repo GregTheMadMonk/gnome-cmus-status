@@ -1,6 +1,4 @@
 const Gtk 	= imports.gi.Gtk;
-const Lang 	= imports.lang;
-const MainLoop	= imports.mainloop;
 const Me	= imports.misc.extensionUtils.getCurrentExtension();
 
 const Shared 	= Me.imports.shared;

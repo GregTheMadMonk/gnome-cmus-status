@@ -1,3 +1,4 @@
+[![AUR package](https://repology.org/badge/version-for-repo/aur/gnome-shell-extension-cmus-status.svg)](https://repology.org/project/gnome-shell-extension-cmus-status/versions)
 # gnome-cmus-status
 A little GNOME shell extension for displaying and controlling cmus status.
 

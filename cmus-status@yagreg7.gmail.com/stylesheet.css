@@ -1,4 +1,4 @@
-.notification-label 
+.notification-label
 {
 	font-size: 24px;
 	font-weight: bold;
@@ -6,10 +6,6 @@
 	background-color: rgba(10,10,10,0.7);
 	border-radius: 5px;
 	padding: .5em;
-}
-
-.popup-menu
-{
 }
 
 .popup-time-label

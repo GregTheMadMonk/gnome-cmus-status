@@ -1,6 +1,5 @@
 // imports
 const Clutter	= imports.gi.Clutter;
-const Gio 	= imports.gi.Gio;
 const GLib 	= imports.gi.GLib;
 const Lang 	= imports.lang;
 const Main 	= imports.ui.main;
@@ -471,7 +470,7 @@ let cmus =
 		else if (std[1].toString() != "")
 		{
 			// resolve recieved data
-			const stdout = std[1].toString().replace("/\'/g", "\\\`").split("\n"); // replace ' quotes with ` to avoid errors while parsing commands later
+			const stdout = std[1].toString().replace("/'/g", "\\`").split("\n"); // replace ' quotes with ` to avoid errors while parsing commands later
 
 			// get cmus status
 			this.state = stdout[0].replace(/status\ /g, "");
@@ -491,14 +490,14 @@ let cmus =
 
 				for (var i = 1; i < stdout.length; i++)
 				{
-					if (stdout[i].includes("tag title ")) 	title = stdout[i].replace(/tag\ title\ /g, "");
-					if (stdout[i].includes("tag album ")) 	album = stdout[i].replace(/tag\ album\ /g, "");
-					if (stdout[i].includes("tag artist ")) 	artist = stdout[i].replace(/tag\ artist\ /g, "");
-					if (stdout[i].includes("duration ")) 	duration = stdout[i].replace(/duration\ /g, "");
-					if (stdout[i].includes("position ")) 	time = stdout[i].replace(/position\ /g, "");
+					if (stdout[i].includes("tag title ")) 	title = stdout[i].replace(/tag title /g, "");
+					if (stdout[i].includes("tag album ")) 	album = stdout[i].replace(/tag album /g, "");
+					if (stdout[i].includes("tag artist ")) 	artist = stdout[i].replace(/tag artist /g, "");
+					if (stdout[i].includes("duration ")) 	duration = stdout[i].replace(/duration /g, "");
+					if (stdout[i].includes("position ")) 	time = stdout[i].replace(/position /g, "");
 
 					// in case there's no track title in tags
-					if (stdout[i].includes("file ") && (title == "")) title = stdout[i].replace(/file\ /g, "").replace(/^.*[\\\/]/g, "");
+					if (stdout[i].includes("file ") && (title == "")) title = stdout[i].replace(/file /g, "").replace(/^.*[\\/]/g, "");
 				}
 
 				if ((this.track.title != title) || (this.track.album != album) || (this.track.artist != artist))
