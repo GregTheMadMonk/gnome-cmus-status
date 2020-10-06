@@ -11,7 +11,6 @@ const PopupMenu	= imports.ui.popupMenu;
 const Shell 	= imports.gi.Shell;
 const Slider	= imports.ui.slider;
 const St	= imports.gi.St;
-const Tweener	= imports.ui.tweener;
 
 const Shared	= Me.imports.shared;
 
@@ -162,13 +161,12 @@ let notification =
 		// set hide timeout
 		MainLoop.timeout_add_seconds(settings.notification.fadeStartTime, () =>
 		{
-			Tweener.addTween(this.actor, 
-						{ 
-							opacity: 0, 
-							time: settings.notification.fadeDuration, 
-							transition: "easeOutQuad",
-							onComplete: () => { this.hide(current); }
-						});
+			this.actor.ease({
+				opacity: 0,
+				time: settings.notification.fadeDuration,
+				transition: Clutter.AnimationMode.EASE_OUT_QUAD,
+				onComplete: () => { this.hide(current); }
+			});
 		});
 	},
 
@@ -219,8 +217,6 @@ const trayItem = new Lang.Class({
 		this.button = new St.Bin({ style_class: "panel-button",
 						reactive: true,
 						can_focus: true,
-						x_fill: true,
-						y_fill: false,
 						track_hover: true });
 
 		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
@@ -241,7 +237,7 @@ const trayItem = new Lang.Class({
 		// create popup
 		let progressItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
 
-		this.progress_bar = new Slider.Slider(0.5, { style_class: "popup-time-bar", x_fill: true });
+		this.progress_bar = new Slider.Slider(0.5, { style_class: "popup-time-bar" });
 		this.progress_bar.connect("drag-end", () => { this.bar_dragging = false; cmus.setPosition(this.progress_bar.value); });
 		this.progress_bar.connect("drag-begin", () => { this.bar_dragging = true; });
 		progressItem.actor.add(this.progress_bar);
@@ -255,7 +251,7 @@ const trayItem = new Lang.Class({
 
 		let controlItem = new PopupMenu.PopupBaseMenuItem({ reactive: false, can_focus: false });
 
-		let controlBin = new St.Bin({ x_expand: true, x_fill: true });
+		let controlBin = new St.Bin({ x_expand: true });
 		let controlBox = new St.BoxLayout({ style_class: "popup-control-panel", x_align: Clutter.ActorAlign.CENTER });
 
 		let controlButtonPlay = new St.Button({ style_class: "system-menu-action",
@@ -305,8 +301,6 @@ const trayItem = new Lang.Class({
 		this.button = new St.Bin({ style_class: "panel-button",
 						reactive: true,
 						can_focus: true,
-						x_fill: true,
-						y_fill: false,
 						track_hover: true });
 
 		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
@@ -328,8 +322,6 @@ const trayItem = new Lang.Class({
 		this.prev_button = new St.Bin({ style_class: "panel-button",
 						reactive: true,
 						can_focus: true,
-						x_fill: true,
-						y_fill: false,
 						track_hover: true });
 		let prev_icon = new St.Icon({ icon_name: "media-skip-backward-symbolic",
 						style_class: "system-status-icon" });
@@ -343,8 +335,6 @@ const trayItem = new Lang.Class({
 		this.next_button = new St.Bin({ style_class: "panel-button",
 						reactive: true,
 						can_focus: true,
-						x_fill: true,
-						y_fill: false,
 						track_hover: true });
 		let next_icon = new St.Icon({ icon_name: "media-skip-forward-symbolic",
 						style_class: "system-status-icon" });
@@ -473,7 +463,7 @@ let cmus =
 			const stdout = std[1].toString().replace("/'/g", "\\`").split("\n"); // replace ' quotes with ` to avoid errors while parsing commands later
 
 			// get cmus status
-			this.state = stdout[0].replace(/status\ /g, "");
+			this.state = stdout[0].replace(/status /g, "");
 
 			if (this.state == "stopped")
 			{
