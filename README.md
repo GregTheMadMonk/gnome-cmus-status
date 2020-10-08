@@ -12,7 +12,7 @@ A little GNOME shell extension for displaying and controlling cmus status.
 
 ## Installation
 
-* [from GNOME extensions](https://extensions.gnome.org/extension/1934/cmus-status/) (**not** up to date with this repo).
+* [from GNOME extensions](https://extensions.gnome.org/extension/1934/cmus-status/) (up to date with this repo).
 * from AUR: **gnome-shell-extension-cmus-status-git**
 * clone/download the repository and run **make**
 
