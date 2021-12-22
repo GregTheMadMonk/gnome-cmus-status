@@ -1,3 +1,4 @@
+const ExtUtils	= imports.misc.extensionUtils;
 const Gtk 	= imports.gi.Gtk;
 const Me	= imports.misc.extensionUtils.getCurrentExtension();
 
@@ -281,7 +282,7 @@ let prefs =
 
 function init()
 {
-	gsettings = Shared.getSettings(Shared.settingsSchema);
+	gsettings = ExtUtils.getSettings(Shared.settingsSchema);
 }
 
 function buildPrefsWidget()

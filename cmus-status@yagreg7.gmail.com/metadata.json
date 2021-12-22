@@ -4,7 +4,7 @@
 	], 
 	"name": "cmus status", 
 	"description": "Shows cmus status", 
-	"version": "9",
+	"version": "10",
 	"uuid": "cmus-status@yagreg7.gmail.com",
 	"url": "https://github.com/GregTheMadMonk/gnome-cmus-status",
 	"settings-schema": "org.gnome.shell.extensions.cmus-status.gschema.xml"

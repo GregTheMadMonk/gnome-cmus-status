@@ -1,7 +1,7 @@
-// imports
 const Clutter	= imports.gi.Clutter;
+const ExtUtils	= imports.misc.extensionUtils;
+const GObject	= imports.gi.GObject;
 const GLib 	= imports.gi.GLib;
-const Lang 	= imports.lang;
 const Main 	= imports.ui.main;
 const MainLoop 	= imports.mainloop;
 const Me	= imports.misc.extensionUtils.getCurrentExtension();
@@ -185,32 +185,32 @@ let notification =
 	}
 };
 
-// tray management
-const trayItem = new Lang.Class({
-	Name: "trayItem",
-	Extends: PanelMenu.Button,
+// Tray management
+const trayItem = GObject.registerClass({ GTypeName: "trayItem" }, class trayItem extends PanelMenu.Button {
+	_init()	{	// tray initialization
+		super._init(0.5, "cmus-status", false);
 
-	main_box: null, // container for all tray ui
-	prev_button: null, button: null, next_button: null, // playback buttons
-	status_label: null, status_icon: null, // middle button contents
-	popup_status_icon: null, 
-	trayed: false, // is system stray ui showed?
-	caption: "tray label", // label caption
-	time_label: null, // popup labels that display track current time/duration
-	progress_bar: null, // bar that shows song progress
+		this.main_box = null;			// Container for all tray ui
+		// Playback buttons
+		this.prev_button = null;
+		this.button = null;
+		this.next_button = null;
+		// Middle button contents
+		this.status_label = null;
+		this.status_icon = null;
+		this.popup_status_icon = null;
+		this.trayed = false;			// Is system stray ui showed?
+		this.caption = "tray label";		// Label caption
+		this.time_label = null;			// Popup labels that display track current time/duration
+		this.progress_bar = null;		// Bar that shows song progress
 
-	bar_dragging: false, // lock bar from updating while dragging
-
-	_init: function()
-	{	// tray initialization
-		this.parent(0.5, "cmus-status", false);
+		this.bar_dragging = false;		// Lock bar from updating while dragging
 
 		if (settings.simpleTray) this.initSimple();
 		else this.initWPopup();
-	},
+	}
 
-	initWPopup: function()
-	{
+	initWPopup() {
 		// construct tray ui
 		this.main_box = new St.BoxLayout();
 		
@@ -285,17 +285,13 @@ const trayItem = new Lang.Class({
 		controlBin.set_child(controlBox);
 
 		controlItem.actor.add_actor(controlBin);
-		//controlItem.actor.add_actor(controlButtonPlay);
-		//controlItem.actor.add_actor(controlButtonNext);
 
 		this.menu.addMenuItem(progressItem);
 		this.menu.addMenuItem(timeItem);
 		this.menu.addMenuItem(controlItem);
-	},
+	}
 	
-	initSimple: function()
-	{
-		// construct tray ui
+	initSimple() { // construct tray ui
 		this.main_box = new St.BoxLayout();
 
 		this.button = new St.Bin({ style_class: "panel-button",
@@ -350,35 +346,30 @@ const trayItem = new Lang.Class({
 		this.main_box.add_child(this.next_button);
 
 		this.actor.add_child(this.main_box);
-	},
+	}
 
-	show: function()
-	{	// add to tray
+	show() {	// add to tray
 		if (!this.trayed)
 		{
 			this.trayed = true;
 			Main.panel.addToStatusArea("cmus-status", this, 0, "right");
 		}
-	},
+	}
 
-	hide: function()
-	{	// remove from tray
+	hide() {	// remove from tray
 		if (this.trayed)
 		{
 			this.trayed = false;
 			this.destroy();
 		}
-	}, 
+	}
 
-	setCaption: function(newCaption)
-	{
+	setCaption(newCaption) {
 		this.caption = newCaption;
-
 		if (this.status_label) this.status_label.text = newCaption;
-	},
+	}
 
-	updateStatus: function(newStatus)
-	{	// updates middle button icon accordingly
+	updateStatus(newStatus) {	// updates middle button icon accordingly
 		if (this.status_icon) switch (newStatus)
 		{
 			case "off": case "stopped":
@@ -404,11 +395,9 @@ const trayItem = new Lang.Class({
 				this.popup_status_icon.icon_name = "media-playback-start-symbolic";
 				break;
 		}
-	},
+	}
 
-	// updates time
-	setTime: function(time, duration)
-	{
+	setTime(time, duration) { // Updates time
 		if (duration == 0)
 		{
 			if (this.time_label) this.time_label.set_text("-:-- / -:--");
@@ -680,13 +669,12 @@ function updateStatus()
 }
 
 // extension functions
-function init()
-{
-	gsettings = Shared.getSettings(Shared.settingsSchema);
-}
+function init() {}
 
 function enable()
 {
+	gsettings = ExtUtils.getSettings(Shared.settingsSchema);
+
 	tray = new trayItem;
 	tray.show();
 
@@ -699,6 +687,7 @@ function enable()
 function disable()
 {
 	tray.hide();
+	tray = null;
 
 	notification.hide(notification.hideIndex);
 
@@ -709,4 +698,5 @@ function disable()
 	}
 
 	enabled = false;
+	gsettings = null;
 }

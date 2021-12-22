@@ -21,29 +21,6 @@ const playBindKey = "play-bind";
 const prevBindKey = "prev-bind";
 const nextBindKey = "next-bind";
 
-function getSettings(schema)
-{
-	if (Gio.Settings.list_schemas().indexOf(schema) == -1)
-	{
-		log("cmus-status: Schema not found! Trying to search in extension subfolder...");
-
-		let schemaDir = Extension.dir.get_child("schemas");
-		if (schemaDir.query_exists(null))
-		{
-			let schemaSource = GioSSS.new_from_directory(schemaDir.get_path(), GioSSS.get_default(), false);
-
-			log("cmus-status: Schema found in extension subfolder. Returning gsettings");
-			return new Gio.Settings({ settings_schema: schemaSource.lookup(schema, true) });
-		} else {
-			log("cmus-status: Schema not found in extension subfolder!");
-			return null;
-		}
-	}
-
-	log("cmus-status: Schema found. Returning gsettings");
-	return new Gio.Settings({ schema: schema });
-}
-
 // converts bind ID from settings to accelerator
 function bindIdToAccel(bindId)
 {
