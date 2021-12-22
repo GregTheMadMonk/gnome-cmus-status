@@ -176,8 +176,8 @@ let prefs =
 			{
 				if (this.widgets.enableNot.get_active())
 				{
-					this.widgets.notPosition["b" + this.np.x + this.np.y].set_sensitive(true);
-					widget.set_sensitive(false);
+					this.widgets.notPosition["b" + this.np.x + this.np.y].set_label("[   ]");
+					widget.set_label("[ HERE ]");
 						
 					this.np.x = i0;
 					this.np.y = j0;
@@ -214,6 +214,7 @@ let prefs =
 
 		if (notifications)
 		{
+			// "not" is for "notifications", not "not"!!!
 			const notEnabled = this.widgets.enableNot.get_active();
 
 			this.np.enabled = notEnabled;
@@ -227,8 +228,8 @@ let prefs =
 			for (let i = 0; i < 3; i++)
 				for (let j = 0; j < 3; j++)
 				{
-					if ((i != this.np.x) || (j != this.np.y)) this.widgets.notPosition["b" + i + j].set_sensitive(notEnabled);
-					else this.widgets.notPosition["b" + i + j].set_sensitive(!notEnabled);
+					if ((i != this.np.x) || (j != this.np.y)) this.widgets.notPosition["b" + i + j].set_label("[   ]");
+					else this.widgets.notPosition["b" + i + j].set_label("[ HERE ]");
 				}
 		}
 	},
@@ -286,7 +287,6 @@ function init()
 function buildPrefsWidget()
 {
 	prefs.init();
-	prefs.form.show_all();
 	prefs.loadPrefs();
 	return prefs.form;
 }

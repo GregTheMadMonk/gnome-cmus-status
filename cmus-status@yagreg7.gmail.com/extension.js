@@ -219,7 +219,7 @@ const trayItem = new Lang.Class({
 						can_focus: true,
 						track_hover: true });
 
-		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
+		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER, style_class: "panel-inner-box" });
 
 		this.status_label = new St.Label({ text: this.caption, y_align: Clutter.ActorAlign.CENTER });
 		this.status_icon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
@@ -303,7 +303,7 @@ const trayItem = new Lang.Class({
 						can_focus: true,
 						track_hover: true });
 
-		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER });
+		let box = new St.BoxLayout({ y_align: Clutter.ActorAlign.CENTER, style_class: "panel-inner-box" });
 
 		this.status_label = new St.Label({ text: this.caption, y_align: Clutter.ActorAlign.CENTER });
 		this.status_icon = new St.Icon({ icon_name: "media-playback-pause-symbolic",
