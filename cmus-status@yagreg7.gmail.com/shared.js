@@ -4,22 +4,22 @@ const Extension 	= ExtensionUtils.getCurrentExtension();
 const Gio		= imports.gi.Gio;
 const GioSSS		= Gio.SettingsSchemaSource;
 
-const settingsSchema = "org.gnome.shell.extensions.cmus-status";
-const needsUpdateKey = "settings-updated";
-const updateIntervalKey = "update-interval";
-const enableBindsKey = "enable-binds";
-const enableNotKey = "enable-notifications";
-const simpleTrayKey = "simple-tray";
-const notPosXKey = "notification-posx";
-const notPosYKey = "notification-posy";
-const notFadeStartKey = "notification-fade-start-time";
-const notFadeDurationKey = "notification-fade-duration";
-const trayFormatKey = "tray-format";
-const notFormatKey = "notification-format";
+var settingsSchema = "org.gnome.shell.extensions.cmus-status";
+var needsUpdateKey = "settings-updated";
+var updateIntervalKey = "update-interval";
+var enableBindsKey = "enable-binds";
+var enableNotKey = "enable-notifications";
+var simpleTrayKey = "simple-tray";
+var notPosXKey = "notification-posx";
+var notPosYKey = "notification-posy";
+var notFadeStartKey = "notification-fade-start-time";
+var notFadeDurationKey = "notification-fade-duration";
+var trayFormatKey = "tray-format";
+var notFormatKey = "notification-format";
 
-const playBindKey = "play-bind";
-const prevBindKey = "prev-bind";
-const nextBindKey = "next-bind";
+var playBindKey = "play-bind";
+var prevBindKey = "prev-bind";
+var nextBindKey = "next-bind";
 
 // converts bind ID from settings to accelerator
 function bindIdToAccel(bindId)
