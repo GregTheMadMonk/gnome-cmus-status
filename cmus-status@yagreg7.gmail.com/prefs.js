@@ -2,7 +2,7 @@ const ExtUtils	= imports.misc.extensionUtils;
 const Gtk 	= imports.gi.Gtk;
 const Me	= imports.misc.extensionUtils.getCurrentExtension();
 
-const Shared 	= Me.imports.shared;
+const Shared	= Me.imports.shared;
 
 let gsettings = null;
 
@@ -98,28 +98,28 @@ let prefs =
 			const notEnabled = this.widgets.enableNot.get_active();
 			const simpleTray = this.widgets.simpleTray.get_active();
 
-			gsettings.set_boolean(Shared.enableBindsKey, bindsEnabled);
-			gsettings.set_boolean(Shared.enableNotKey, notEnabled);
-			gsettings.set_boolean(Shared.simpleTrayKey, simpleTray);
-			gsettings.set_int(Shared.notPosXKey, this.np.x);
-			gsettings.set_int(Shared.notPosYKey, this.np.y);
+			gsettings.set_boolean(Shared.exports().enableBindsKey, bindsEnabled);
+			gsettings.set_boolean(Shared.exports().enableNotKey, notEnabled);
+			gsettings.set_boolean(Shared.exports().simpleTrayKey, simpleTray);
+			gsettings.set_int(Shared.exports().notPosXKey, this.np.x);
+			gsettings.set_int(Shared.exports().notPosYKey, this.np.y);
 
-			gsettings.set_int(Shared.notFadeStartKey, this.widgets.notFadeStartAdj.get_value());
-			gsettings.set_int(Shared.notFadeDurationKey, this.widgets.notFadeDurationAdj.get_value());
+			gsettings.set_int(Shared.exports().notFadeStartKey, this.widgets.notFadeStartAdj.get_value());
+			gsettings.set_int(Shared.exports().notFadeDurationKey, this.widgets.notFadeDurationAdj.get_value());
 
-			gsettings.set_int(Shared.updateIntervalKey, this.widgets.updateIntervalAdj.get_value());
+			gsettings.set_int(Shared.exports().updateIntervalKey, this.widgets.updateIntervalAdj.get_value());
 
-			gsettings.set_string(Shared.trayFormatKey, this.widgets.trayFormat.get_text());
-			gsettings.set_string(Shared.notFormatKey, this.widgets.notFormat.get_text());
+			gsettings.set_string(Shared.exports().trayFormatKey, this.widgets.trayFormat.get_text());
+			gsettings.set_string(Shared.exports().notFormatKey, this.widgets.notFormat.get_text());
 
-			if (this.widgets.playBindMann.get_active()) gsettings.set_string(Shared.playBindKey, "#" + this.widgets.playBindTxt.get_text());
-			else gsettings.set_string(Shared.playBindKey, this.widgets.playBind.get_active_id());
-			if (this.widgets.prevBindMann.get_active()) gsettings.set_string(Shared.prevBindKey, "#" + this.widgets.playBindTxt.get_text());
-			else gsettings.set_string(Shared.prevBindKey, this.widgets.prevBind.get_active_id());
-			if (this.widgets.nextBindMann.get_active()) gsettings.set_string(Shared.nextBindKey, "#" + this.widgets.nextBindTxt.get_text());
-			else gsettings.set_string(Shared.nextBindKey, this.widgets.nextBind.get_active_id());
+			if (this.widgets.playBindMann.get_active()) gsettings.set_string(Shared.exports().playBindKey, "#" + this.widgets.playBindTxt.get_text());
+			else gsettings.set_string(Shared.exports().playBindKey, this.widgets.playBind.get_active_id());
+			if (this.widgets.prevBindMann.get_active()) gsettings.set_string(Shared.exports().prevBindKey, "#" + this.widgets.playBindTxt.get_text());
+			else gsettings.set_string(Shared.exports().prevBindKey, this.widgets.prevBind.get_active_id());
+			if (this.widgets.nextBindMann.get_active()) gsettings.set_string(Shared.exports().nextBindKey, "#" + this.widgets.nextBindTxt.get_text());
+			else gsettings.set_string(Shared.exports().nextBindKey, this.widgets.nextBind.get_active_id());
 
-			gsettings.set_boolean(Shared.needsUpdateKey, true);
+			gsettings.set_boolean(Shared.exports().needsUpdateKey, true);
 		});
 
 		this.widgets.enableBinds.connect("toggled", (widget) =>
@@ -237,29 +237,29 @@ let prefs =
 
 	loadPrefs: function()
 	{
-		this.np.x = gsettings.get_int(Shared.notPosXKey);
-		this.np.y = gsettings.get_int(Shared.notPosYKey);
+		this.np.x = gsettings.get_int(Shared.exports().notPosXKey);
+		this.np.y = gsettings.get_int(Shared.exports().notPosYKey);
 
-		this.widgets.enableBinds.set_active(gsettings.get_boolean(Shared.enableBindsKey));
-		this.widgets.simpleTray.set_active(gsettings.get_boolean(Shared.simpleTrayKey));
+		this.widgets.enableBinds.set_active(gsettings.get_boolean(Shared.exports().enableBindsKey));
+		this.widgets.simpleTray.set_active(gsettings.get_boolean(Shared.exports().simpleTrayKey));
 		if (this.widgets.simpleTray.get_active()) this.widgets.simpleTray.set_label("Tray: control buttons");
 		else this.widgets.simpleTray.set_label("Tray: opens popup");
-		this.widgets.enableNot.set_active(gsettings.get_boolean(Shared.enableNotKey));
+		this.widgets.enableNot.set_active(gsettings.get_boolean(Shared.exports().enableNotKey));
 
-		this.widgets.notFadeStartAdj.set_value(gsettings.get_int(Shared.notFadeStartKey));
-		this.widgets.notFadeDurationAdj.set_value(gsettings.get_int(Shared.notFadeDurationKey));
+		this.widgets.notFadeStartAdj.set_value(gsettings.get_int(Shared.exports().notFadeStartKey));
+		this.widgets.notFadeDurationAdj.set_value(gsettings.get_int(Shared.exports().notFadeDurationKey));
 
-		this.widgets.updateIntervalAdj.set_value(gsettings.get_int(Shared.updateIntervalKey));
+		this.widgets.updateIntervalAdj.set_value(gsettings.get_int(Shared.exports().updateIntervalKey));
 
-		this.widgets.trayFormat.set_text(gsettings.get_string(Shared.trayFormatKey));
-		this.widgets.notFormat.set_text(gsettings.get_string(Shared.notFormatKey));
+		this.widgets.trayFormat.set_text(gsettings.get_string(Shared.exports().trayFormatKey));
+		this.widgets.notFormat.set_text(gsettings.get_string(Shared.exports().notFormatKey));
 
 		this.updateBindSet(this.widgets.playBind, this.widgets.playBindMann,
-				this.widgets.playBindTxt, gsettings.get_string(Shared.playBindKey));
+				this.widgets.playBindTxt, gsettings.get_string(Shared.exports().playBindKey));
 		this.updateBindSet(this.widgets.prevBind, this.widgets.prevBindMann,
-				this.widgets.prevBindTxt, gsettings.get_string(Shared.prevBindKey));
+				this.widgets.prevBindTxt, gsettings.get_string(Shared.exports().prevBindKey));
 		this.updateBindSet(this.widgets.nextBind, this.widgets.nextBindMann,
-				this.widgets.nextBindTxt, gsettings.get_string(Shared.nextBindKey));
+				this.widgets.nextBindTxt, gsettings.get_string(Shared.exports().nextBindKey));
 
 		this.invalidateEnabled(true, true);
 	},
@@ -282,7 +282,7 @@ let prefs =
 
 function init()
 {
-	gsettings = ExtUtils.getSettings(Shared.settingsSchema);
+	gsettings = ExtUtils.getSettings(Shared.exports().settingsSchema);
 }
 
 function buildPrefsWidget()

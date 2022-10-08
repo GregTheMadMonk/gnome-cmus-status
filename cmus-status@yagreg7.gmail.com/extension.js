@@ -553,19 +553,19 @@ let enabled = false; // false to stop updating the status
 // re-load settings from gsettings
 function updateSettings()
 {
-	settings.updateIntervalMs = gsettings.get_int(Shared.updateIntervalKey);
+	settings.updateIntervalMs = gsettings.get_int(Shared.exports().updateIntervalKey);
 
-	settings.notification.enabled = gsettings.get_boolean(Shared.enableNotKey);
-	settings.notification.hPos = gsettings.get_int(Shared.notPosXKey);
-	settings.notification.vPos = gsettings.get_int(Shared.notPosYKey);
+	settings.notification.enabled = gsettings.get_boolean(Shared.exports().enableNotKey);
+	settings.notification.hPos = gsettings.get_int(Shared.exports().notPosXKey);
+	settings.notification.vPos = gsettings.get_int(Shared.exports().notPosYKey);
 
-	settings.notification.fadeStartTime = gsettings.get_int(Shared.notFadeStartKey);
-	settings.notification.fadeDuration = gsettings.get_int(Shared.notFadeDurationKey);
+	settings.notification.fadeStartTime = gsettings.get_int(Shared.exports().notFadeStartKey);
+	settings.notification.fadeDuration = gsettings.get_int(Shared.exports().notFadeDurationKey);
 
-	settings.trayFormat = gsettings.get_string(Shared.trayFormatKey);
-	settings.notifyFormat = gsettings.get_string(Shared.notFormatKey);
+	settings.trayFormat = gsettings.get_string(Shared.exports().trayFormatKey);
+	settings.notifyFormat = gsettings.get_string(Shared.exports().notFormatKey);
 
-	const newBindsEnabled = gsettings.get_boolean(Shared.enableBindsKey);
+	const newBindsEnabled = gsettings.get_boolean(Shared.exports().enableBindsKey);
 	if (newBindsEnabled != settings.bindings.enabled)
 	{
 		if (newBindsEnabled)
@@ -592,9 +592,9 @@ function updateSettings()
 		settings.bindings.enabled = newBindsEnabled;
 	}
 
-	const newPlayBind = Shared.bindIdToAccel(gsettings.get_string(Shared.playBindKey));
-	const newPrevBind = Shared.bindIdToAccel(gsettings.get_string(Shared.prevBindKey));
-	const newNextBind = Shared.bindIdToAccel(gsettings.get_string(Shared.nextBindKey));
+	const newPlayBind = Shared.bindIdToAccel(gsettings.get_string(Shared.exports().playBindKey));
+	const newPrevBind = Shared.bindIdToAccel(gsettings.get_string(Shared.exports().prevBindKey));
+	const newNextBind = Shared.bindIdToAccel(gsettings.get_string(Shared.exports().nextBindKey));
 
 	log("cmus-status: New binds play/prev/next - " + newPlayBind + "/" + newPrevBind + "/" + newNextBind);
 
@@ -613,7 +613,7 @@ function updateSettings()
 		keys.bound = true;
 	}
 
-	const newSimpleTray = gsettings.get_boolean(Shared.simpleTrayKey);
+	const newSimpleTray = gsettings.get_boolean(Shared.exports().simpleTrayKey);
 	if (newSimpleTray != settings.simpleTray)
 	{
 		settings.simpleTray = newSimpleTray;
@@ -628,7 +628,7 @@ function updateSettings()
 		}
 	}
 
-	gsettings.set_boolean(Shared.needsUpdateKey, false);
+	gsettings.set_boolean(Shared.exports().needsUpdateKey, false);
 }
 
 // status update function
@@ -636,7 +636,7 @@ function updateStatus()
 {
 	cmus.updateStatus();
 
-	if (gsettings.get_boolean(Shared.needsUpdateKey)) updateSettings();
+	if (gsettings.get_boolean(Shared.exports().needsUpdateKey)) updateSettings();
 
 	if (cmus.updated && settings.notification.enabled)
 	{
@@ -673,7 +673,7 @@ function init() {}
 
 function enable()
 {
-	gsettings = ExtUtils.getSettings(Shared.settingsSchema);
+	gsettings = ExtUtils.getSettings(Shared.exports().settingsSchema);
 
 	tray = new trayItem;
 	tray.show();
