@@ -1,10 +1,10 @@
 {
 	"shell-version": [
-		"40", "41"
+		"40", "41", "42"
 	], 
 	"name": "cmus status", 
 	"description": "Shows cmus status", 
-	"version": "10",
+	"version": "11",
 	"uuid": "cmus-status@yagreg7.gmail.com",
 	"url": "https://github.com/GregTheMadMonk/gnome-cmus-status",
 	"settings-schema": "org.gnome.shell.extensions.cmus-status"
